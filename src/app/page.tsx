@@ -5,7 +5,7 @@ import Navbar from "@/components/navbar";
 import WordRotate from "@/components/magicui/word-rotate";
 import { FlipWords } from "@/components/ui/flip-words";
 import BlurFade from "@/components/magicui/blur-fade";
-import { ProjectCard } from "@/components/project-card";
+import ProjectCard from "@/components/project-card";
 
 export default function Home() {
   return (

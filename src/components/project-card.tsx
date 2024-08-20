@@ -28,7 +28,7 @@ interface Props {
   className?: string;
 }
 
-export function ProjectCard({
+export default function ProjectCard({
   title,
   href,
   description,
