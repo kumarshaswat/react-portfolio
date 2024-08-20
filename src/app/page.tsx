@@ -12,10 +12,10 @@ export default function Home() {
     <main className="flex min-h-screen flex-col h-full w-full">
       <section className="items-left pt-[20vh] pl-[20vw] h-max pb-14">
         <BlurFade>
-          <h1 className="text-7xl font-bold"> Hello, I'm</h1>
+          <h1 className="text-7xl font-bold"> Hello, I&apos;m</h1>
           <h1 className="text-7xl font-bold text-[#7374be] dark:text-[#9394f1]">Shaswat Kumar.</h1>
           <div className="flex">
-            <h1 className="text-7xl font-bold">I'm a</h1>
+            <h1 className="text-7xl font-bold">I&apos;m a</h1>
             <FlipWords
               className="text-7xl font-bold text-black dark:text-white pl-[11.5rem]"
               words={["Web Developer.", "UX Designer.", "CS Student.", "Full-Stack Developer.", "Tech Enthusiast.", "Team Leader.", "Problem Solver.", "Contributor.", "Creative Coder.", "Learner.", "Mentor."]}
