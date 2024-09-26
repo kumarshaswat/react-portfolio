@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import { CalendarIcon, HomeIcon, MailIcon, PencilIcon } from "lucide-react";
+import { CalendarIcon, HomeIcon, MailIcon, PencilIcon, File } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
@@ -19,6 +19,7 @@ export type IconProps = React.HTMLAttributes<SVGElement>;
 const Icons = {
   calendar: (props: IconProps) => <CalendarIcon {...props} />,
   email: (props: IconProps) => <MailIcon {...props} />,
+  resume: (props: IconProps) => <File {...props} />,
   linkedin: (props: IconProps) => (
     <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" {...props}>
       <title>LinkedIn</title>
@@ -63,29 +64,29 @@ const Icons = {
 const DATA = {
   navbar: [
     { href: "/", icon: HomeIcon, label: "Home" },
-    { href: "#", icon: PencilIcon, label: "Blog" },
+    { href: "/about-me", icon: PencilIcon, label: "About Me" },
   ],
   contact: {
     social: {
       GitHub: {
         name: "GitHub",
-        url: "#",
+        url: "https://github.com/kumarshaswat",
         icon: Icons.github,
       },
       LinkedIn: {
         name: "LinkedIn",
-        url: "#",
+        url: "https://www.linkedin.com/in/shaswatkumar1/",
         icon: Icons.linkedin,
-      },
-      X: {
-        name: "X",
-        url: "#",
-        icon: Icons.x,
       },
       email: {
         name: "Send Email",
-        url: "#",
+        url: "mailto:shaswat_kr@yahoo.com",
         icon: Icons.email,
+      },
+      Resume: {
+        name: "X",
+        url: "https://drive.google.com/file/d/1PpqkC8EWFY3LhiuxmMg1KE9OiXgIOICn/view?usp=sharing",
+        icon: Icons.resume,
       },
     },
   },

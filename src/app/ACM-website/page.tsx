@@ -7,17 +7,25 @@ import Navbar from "@/components/navbar";
 
 export default function Home() {
   return (
-    <section className="bg-black">
+    <section>
         <HeroParallax products={products} />
-        <div className="max-w-7xl mx-auto py-4 px-4 w-full  left-0 top-0">
-            <h1 className="text-2xl md:text-7xl font-bold text-slate-50">
-                The development
-            </h1>
-            <p className="max-w-2xl text-base md:text-xl mt-8 text-slate-50">
-                We build beautiful products with the latest technologies and frameworks.
-                We are a team of passionate developers and designers that love to build
-                amazing products.
-            </p>
+        <div className="max-w-7xl mx-auto py-4 px-4 w-full flex left-0 top-0">
+            <div className="w-[30vw] p-8 flex justify-center">
+              <h1 className="text-4xl font-bold text-white">Project Vision</h1>
+            </div>
+            <div className="w-[70vw] p-8 overflow-y-auto">
+              <div className="space-y-6 max-w-2xl text-base md:text-xl text-neutral-200">
+                <p>
+                  During the development of Bankwise, our team recognized the common challenge of managing <span className="text-white font-semibold">multiple banking apps</span> to control one's finances. We aimed to <span className="text-white font-semibold">simplify the user experience</span> by creating an app that serves as a banking portfolio, enabling users to <span className="text-white font-semibold">manage their finances</span> across multiple banking accounts from different banks in one place.
+                </p>
+                <p>
+                  In addition to simplifying the user experience, Bankwise also aims to <span className="text-white font-semibold">enhance financial literacy</span> among its users. We understand that many people struggle to understand financial concepts and are often intimidated by financial jargon. Therefore, we have <span className="text-white font-semibold">incorporated educational tools and resources</span> within the app to help users develop their financial knowledge and make informed decisions. Our goal is to <span className="text-white font-semibold">empower users</span> with the skills and knowledge necessary to achieve their financial goals and improve their overall financial well-being.
+                </p>
+                <p>
+                  With Bankwise, users can not only manage their finances easily and conveniently but also gain the knowledge and confidence to <span className="text-white font-semibold">take control of their financial future</span>.
+                </p>
+              </div>
+        </div>
         </div>
     </section>
   );
