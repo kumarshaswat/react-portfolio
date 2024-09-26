@@ -30,7 +30,7 @@ export default function RootLayout({
           fontSans.variable
         )}
       >
-        <div className="fixed inset-0 z-[-10]">
+        <div className="fixed inset-0 z-[-10] dark:opacity-30">
             <DotPattern
             className={cn(
                 "[mask-image:radial-gradient(800px_circle_at_center,white,transparent)]"
