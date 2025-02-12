@@ -1,24 +1,29 @@
 "use client";
+import { ScrollProgress } from "../../components/ui/scroll-progress";
 import Image from "next/image";
 import Link from "next/link";
-import { Gelasio } from "next/font/google";
+import { Radley } from "next/font/google";
 
-const TitleFont = Gelasio({ subsets: ["latin"] });
+const TitleFont = Radley({
+  subsets: ["latin"],
+  weight: "400",
+});
 
 export default function BankwiseCaseStudy() {
   return (
     <div className="min-h-screen bg-[#111019] text-white pt-16 px-[15vw]">
       <main>
+        <ScrollProgress className="bg-[#dd6e42]" />
         <section className="py-20 pt-10 text-left relative">
           <div className="container mx-auto px-4 pt-10">
             <p className="text-lg leading-[34px] text-[#d8d7e2] mb-4 pl-4">
               HACKUTD IX || FALL 2022 || 1ST PLACE FOR BEST DESIGN
             </p>
             <div className={`${TitleFont.className}`}>
-              <h1 className="text-[#dd6e42] text-6xl font-black mb-4 pl-4">
+              <h1 className="text-[#dd6e42] text-8xl font-black mb-4 pl-4">
                 Bankwise
               </h1>
-              <p className="text-[#dd6e42] text-2xl tracking-wider pl-4">
+              <p className="text-[#dd6e42] text-3xl tracking-wider pl-4">
                 All your banks, all in one place.
               </p>
             </div>

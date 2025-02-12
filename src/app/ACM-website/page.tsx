@@ -70,79 +70,79 @@ const products = [
   {
     title: "Moonbeam",
     link: "https://gomoonbeam.com",
-    thumbnail: "/main/acm_website.png",
+    thumbnail: "/assets/acm_website.png",
   },
   {
     title: "Cursor",
     link: "https://cursor.so",
-    thumbnail: "/main/acm_website.png",
+    thumbnail: "/assets/acm_website.png",
   },
   {
     title: "Rogue",
     link: "https://userogue.com",
-    thumbnail: "/main/acm_website.png",
+    thumbnail: "/assets/acm_website.png",
   },
 
   {
     title: "Editorially",
     link: "https://editorially.org",
-    thumbnail: "/main/acm_website.png",
+    thumbnail: "/assets/acm_website.png",
   },
   {
     title: "Editrix AI",
     link: "https://editrix.ai",
-    thumbnail: "/main/acm_website.png",
+    thumbnail: "/assets/acm_website.png",
   },
   {
     title: "Pixel Perfect",
     link: "https://app.pixelperfect.quest",
-    thumbnail: "/main/acm_website.png",
+    thumbnail: "/assets/acm_website.png",
   },
 
   {
     title: "Algochurn",
     link: "https://algochurn.com",
-    thumbnail: "/main/acm_website.png",
+    thumbnail: "/assets/acm_website.png",
   },
   {
     title: "Aceternity UI",
     link: "https://ui.aceternity.com",
-    thumbnail: "/main/acm_website.png",
+    thumbnail: "/assets/acm_website.png",
   },
   {
     title: "Tailwind Master Kit",
     link: "https://tailwindmasterkit.com",
-    thumbnail: "/main/acm_website.png",
+    thumbnail: "/assets/acm_website.png",
   },
   {
     title: "SmartBridge",
     link: "https://smartbridgetech.com",
-    thumbnail: "/main/acm_website.png",
+    thumbnail: "/assets/acm_website.png",
   },
   {
     title: "Renderwork Studio",
     link: "https://renderwork.studio",
-    thumbnail: "/main/acm_website.png",
+    thumbnail: "/assets/acm_website.png",
   },
 
   {
     title: "Creme Digital",
     link: "https://cremedigital.com",
-    thumbnail: "/main/acm_website.png",
+    thumbnail: "/assets/acm_website.png",
   },
   {
     title: "Golden Bells Academy",
     link: "https://goldenbellsacademy.com",
-    thumbnail: "/main/acm_website.png",
+    thumbnail: "/assets/acm_website.png",
   },
   {
     title: "Invoker Labs",
     link: "https://invoker.lol",
-    thumbnail: "/main/acm_website.png",
+    thumbnail: "/assets/acm_website.png",
   },
   {
     title: "E Free Invoice",
     link: "https://efreeinvoice.com",
-    thumbnail: "/main/acm_website.png",
+    thumbnail: "/assets/acm_website.png",
   },
 ];

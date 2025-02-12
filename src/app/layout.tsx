@@ -31,13 +31,13 @@ export default function RootLayout({
         )}
       >
         <div className="fixed inset-0 z-[-10] dark:opacity-30">
-            <DotPattern
+          <DotPattern
             className={cn(
-                "[mask-image:radial-gradient(800px_circle_at_center,white,transparent)]"
+              "[mask-image:radial-gradient(800px_circle_at_center,white,transparent)]"
             )}
-            /> 
+          />
         </div>
-        <ThemeProvider attribute="class" defaultTheme="light">
+        <ThemeProvider attribute="class" defaultTheme="dark">
           <TooltipProvider delayDuration={0}>
             {children}
             <Navbar />
