@@ -7,6 +7,10 @@ import { FlipWords } from "@/components/ui/flip-words";
 import BlurFade from "@/components/magicui/blur-fade";
 import ProjectCard from "@/components/project-card";
 import { Github, BookText, Figma, Link } from "lucide-react";
+import { HackathonCard } from "@/components/ui/hackathon-card";
+import { DATA } from "@/data";
+
+const BLUR_FADE_DELAY = 0.04;
 
 export default function Home() {
   return (
@@ -61,17 +65,17 @@ export default function Home() {
             <BlurFade delay={10 * 0.1}>
               <ProjectCard
                 title="The UX Website"
-                href="https://example.com/project"
+                href="https://uxutd.com/"
                 description="This is my case study on how I acted as PM for the design and development of the new UX website. I assisted in creating the UI/UX and I worked with a team to develop the website and bring it to life."
                 dates="August 2024 - Present"
                 tags={["JavaScript", "React", "Next.js"]}
                 link="https://example.com/project"
-                image="/main/ux_website.png"
+                image="/assets/ux_website.png"
                 links={[
                   {
                     icon: <Github size={16} />, // You can replace this with an actual icon component
                     type: "GitHub",
-                    href: "https://github.com/example/project",
+                    href: "https://github.com/uxutd/UX-Website",
                   },
                   {
                     icon: <Link size={16} />, // You can replace this with an actual icon component
@@ -89,12 +93,12 @@ export default function Home() {
                 description="This is my case study on how I assisted with the UI/UX and development of the ACM website. I mainly worked on the landing page, creating most of the main and the animations."
                 dates="August 2024 - Present"
                 tags={["JavaScript", "React", "Next.js"]}
-                image="/main/acm_website.png"
+                image="/assets/acm_website.png"
                 links={[
                   {
                     icon: <Github size={16} />, // You can replace this with an actual icon component
                     type: "GitHub",
-                    href: "https://github.com/example/project",
+                    href: "https://github.com/acmutd/website",
                   },
                   {
                     icon: <Link size={16} />, // You can replace this with an actual icon component
@@ -113,17 +117,17 @@ export default function Home() {
                 dates="November 2022"
                 tags={["JavaScript", "React", "Next.js"]}
                 link="https://example.com/project"
-                image="/main/bankwise_mockup.png"
+                image="/assets/bankwise_mockup.png"
                 links={[
                   {
                     icon: <Github size={16} />, // You can replace this with an actual icon component
                     type: "GitHub",
-                    href: "https://github.com/example/project",
+                    href: "https://github.com/kumarshaswat/bankwise",
                   },
                   {
                     icon: <BookText size={16} />, // Replace with an actual icon component
                     type: "DevPost",
-                    href: "https://docs.example.com/project",
+                    href: "https://devpost.com/software/bankwise",
                   },
                 ]}
                 className="my-custom-class"
@@ -132,22 +136,22 @@ export default function Home() {
             <BlurFade delay={13 * 0.1}>
               <ProjectCard
                 title="Sociate"
-                href="https://example.com/project"
+                href="https://www.figma.com/design/RXnhf5yWDDQ7MydwndY1FG/UCI-Designathon-(Sociate)?node-id=0-1&t=uHGs9E88A4CRU7Xo-1"
                 description="This is a case study of how I mastered my craft in User Research and UI/UX design. I worked with a team of 5 developers to create a social media platform that connects people with similar interests."
                 dates="August 2024 - Present"
                 tags={["JavaScript", "React", "Next.js"]}
                 link="https://example.com/project"
-                image="/main/sociate_mockup.png"
+                image="/assets/sociate_mockup.png"
                 links={[
                   {
                     icon: <Figma size={16} />, // You can replace this with an actual icon component
                     type: "Figma",
-                    href: "https://github.com/example/project",
+                    href: "https://www.figma.com/design/RXnhf5yWDDQ7MydwndY1FG/UCI-Designathon-(Sociate)?node-id=0-1&t=uHGs9E88A4CRU7Xo-1",
                   },
                   {
                     icon: <span>📄</span>, // Replace with an actual icon component
-                    type: "Documentation",
-                    href: "https://docs.example.com/project",
+                    type: "Research",
+                    href: "https://www.figma.com/design/RXnhf5yWDDQ7MydwndY1FG/UCI-Designathon-(Sociate)?node-id=57-3&t=uHGs9E88A4CRU7Xo-1",
                   },
                 ]}
                 className="my-custom-class"
@@ -156,28 +160,69 @@ export default function Home() {
             <BlurFade delay={14 * 0.1}>
               <ProjectCard
                 title="Shop & Share"
-                href="https://example.com/project"
+                href="https://www.figma.com/design/6xRaV6rfhLhvA5NgHsZ4Es/Shop%26Share-Logo-Ideas?node-id=27-49&t=OYyXUF6daKQR5cJW-1"
                 description="This is a case study on my first ever projects that ignited the flame of love for front-end and back-end tools. Four other developers and I participated in a highly competitive development program to make a collaborative shopping list app."
                 dates="August 2024 - Present"
                 tags={["JavaScript", "React", "Next.js"]}
                 link="https://example.com/project"
-                image="/path/to/project-image.jpg"
+                image="/assets/shopandshare_mockup.png"
                 links={[
                   {
                     icon: <span>🔗</span>, // You can replace this with an actual icon component
                     type: "GitHub",
-                    href: "https://github.com/example/project",
+                    href: "https://github.com/acm-projects/Shop-and-Share",
                   },
                   {
                     icon: <span>📄</span>, // Replace with an actual icon component
-                    type: "Documentation",
-                    href: "https://docs.example.com/project",
+                    type: "Presentation",
+                    href: "https://docs.google.com/presentation/d/1-nI3FBE1ePgHm5GRyTW2AMS_ICKkEjp5RNpKb2NZ7xg/edit#slide=id.p",
                   },
                 ]}
                 className="my-custom-class"
               />
             </BlurFade>
-          </div>
+          </div>{" "}
+          <section id="Work">
+            <div className="space-y-12 w-full py-12 mx-auto max-w-[60vw]">
+              <BlurFade delay={BLUR_FADE_DELAY * 13}>
+                <div className="flex flex-col items-center justify-center space-y-4 text-center">
+                  <div className="space-y-2">
+                    <div className="inline-block rounded-lg bg-foreground text-background px-3 py-1 text-sm">
+                      Work Experience
+                    </div>
+                    <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
+                      I like building things
+                    </h2>
+                    <p className="text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                      During my time in university, I joined a bunch of
+                      organizations and gained valuable experience working on
+                      real-world projects. Here are some of the highlights of my
+                      work experience.
+                    </p>
+                  </div>
+                </div>
+              </BlurFade>
+              <BlurFade delay={BLUR_FADE_DELAY * 14}>
+                <ul className="mb-4 ml-4 divide-y divide-dashed border-l">
+                  {DATA.hackathons.map((project, id) => (
+                    <BlurFade
+                      key={project.title + project.dates}
+                      delay={BLUR_FADE_DELAY * 15 + id * 0.05}
+                    >
+                      <HackathonCard
+                        title={project.title}
+                        description={project.description}
+                        location={project.location}
+                        dates={project.dates}
+                        image={project.image}
+                        links={project.links}
+                      />
+                    </BlurFade>
+                  ))}
+                </ul>
+              </BlurFade>
+            </div>
+          </section>
         </div>
       </section>
     </main>
