@@ -1,6 +1,15 @@
 export const DATA = {
   hackathons: [
     {
+      title: "Software Developer",
+      dates: "Aug 2025 - Present",
+      location: "HackUTD",
+      description:
+        "Working with a team to devlop all flagship applications for HackUTD, including the main website, the org site, and the admin dashboards and other internal tools. Using React, Next.js, and TailwindCSS for the frontend, and Node.js and Firebase for the backend.",
+      image: "/assets/hack_logo.png",
+      links: [],
+    },
+    {
       title: "UXperience Director",
       dates: "Aug 2024 - Jan 2025",
       location: "UX Club at UT Dallas",

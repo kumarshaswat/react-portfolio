@@ -64,6 +64,30 @@ export default function Home() {
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 max-w-[60vw] mx-auto">
             <BlurFade delay={10 * 0.1}>
               <ProjectCard
+                title="ELMO - Capstone Project"
+                href="/elmo"
+                description="This is my case study on how I acted as PM for the design and development of the new UX website. I assisted in creating the UI/UX and I worked with a team to develop the website and bring it to life."
+                dates="August 2024 - Present"
+                tags={["JavaScript", "React", "Next.js"]}
+                link="https://example.com/project"
+                image="/assets/elmo_landing.png"
+                links={[
+                  {
+                    icon: <Github size={16} />, // You can replace this with an actual icon component
+                    type: "GitHub",
+                    href: "https://github.com/Sharktail001/ELMO-Capstone-Proj",
+                  },
+                  // {
+                  //   icon: <Link size={16} />, // You can replace this with an actual icon component
+                  //   type: "Link",
+                  //   href: "https://uxutd.com/",
+                  // },
+                ]}
+                className="my-custom-class"
+              />
+            </BlurFade>
+            <BlurFade delay={10 * 0.1}>
+              <ProjectCard
                 title="The UX Website"
                 href="https://uxutd.com/"
                 description="This is my case study on how I acted as PM for the design and development of the new UX website. I assisted in creating the UI/UX and I worked with a team to develop the website and bring it to life."
