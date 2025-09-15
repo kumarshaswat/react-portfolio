@@ -662,15 +662,15 @@ export default function CaseStudyPage() {
           <div className="space-y-8">
             <div className="space-y-4">
               <h2 className="font-playfair text-4xl font-bold text-slate-100">
-                Let's Connect
+                Let&apos;s Connect
               </h2>
               <div className="w-20 h-1 rounded-full mx-auto bg-gradient-to-r from-[#FF7E77] to-[#FF9F9A]"></div>
             </div>
 
             <p className="text-lg text-pretty max-w-2xl mx-auto leading-relaxed text-slate-400">
               Interested in discussing AI engineering, machine learning
-              innovations, or potential collaboration opportunities? I'd love to
-              connect and explore how we can build the future together.
+              innovations, or potential collaboration opportunities? I&apos;d
+              love to connect and explore how we can build the future together.
             </p>
 
             <div className="flex flex-wrap justify-center gap-6 pt-8">
