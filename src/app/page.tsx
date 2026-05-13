@@ -66,22 +66,17 @@ export default function Home() {
               <ProjectCard
                 title="ELMO - Capstone Project"
                 href="/elmo"
-                description="This is my case study on how I acted as PM for the design and development of the new UX website. I assisted in creating the UI/UX and I worked with a team to develop the website and bring it to life."
-                dates="August 2024 - Present"
-                tags={["JavaScript", "React", "Next.js"]}
+                description="ELMO is an AI platform that streamlines news consumption by delivering concise, customizable summaries from multiple sources. I deployed and fine-tuned a local DeepSeek model to power this analysis, utilizing advanced prompt engineering for optimal text summarization."
+                dates="January 2025 - May 2025"
+                tags={["Python", "Machine Learning", "AI"]}
                 link="https://example.com/project"
                 image="/assets/elmo_landing.png"
                 links={[
                   {
-                    icon: <Github size={16} />, // You can replace this with an actual icon component
+                    icon: <Github size={16} />,
                     type: "GitHub",
                     href: "https://github.com/Sharktail001/ELMO-Capstone-Proj",
                   },
-                  // {
-                  //   icon: <Link size={16} />, // You can replace this with an actual icon component
-                  //   type: "Link",
-                  //   href: "https://uxutd.com/",
-                  // },
                 ]}
                 className="my-custom-class"
               />
@@ -114,18 +109,18 @@ export default function Home() {
               <ProjectCard
                 title="The ACM Website"
                 href="/ACM-website"
-                description="This is my case study on how I assisted with the UI/UX and development of the ACM website. I mainly worked on the landing page, creating most of the main and the animations."
-                dates="August 2024 - Present"
+                description="Acted as the sole front-end developer over a 2-3 month summer period to completely refresh the ACM website. Designed and built the new landing page, about page, and all necessary core pages to modernize the organization's digital presence."
+                dates="Summer Project"
                 tags={["JavaScript", "React", "Next.js"]}
                 image="/assets/acm_website.png"
                 links={[
                   {
-                    icon: <Github size={16} />, // You can replace this with an actual icon component
+                    icon: <Github size={16} />,
                     type: "GitHub",
                     href: "https://github.com/acmutd/website",
                   },
                   {
-                    icon: <Link size={16} />, // You can replace this with an actual icon component
+                    icon: <Link size={16} />,
                     type: "Link",
                     href: "https://acmutd.co/",
                   },
