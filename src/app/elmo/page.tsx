@@ -1,716 +1,1412 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
-import {
-  ExternalLink,
   Github,
   Linkedin,
   Mail,
   ChevronDown,
   ChevronUp,
-  Zap,
-  Target,
-  Users,
-  TrendingUp,
-  Brain,
-  Database,
-  Cpu,
+  ArrowRight,
 } from "lucide-react";
 
-export default function CaseStudyPage() {
-  const [expandedSections, setExpandedSections] = useState<
-    Record<string, boolean>
-  >({});
+const ACCENT = "#FF7E77";
 
-  const toggleSection = (section: string) => {
-    setExpandedSections((prev) => ({
-      ...prev,
-      [section]: !prev[section],
-    }));
-  };
+// ─── tiny design-system helpers ────────────────────────────────────────────
+const Tag = ({ children }) => (
+  <span
+    style={{
+      display: "inline-block",
+      padding: "3px 12px",
+      borderRadius: 999,
+      border: `1px solid ${ACCENT}44`,
+      color: ACCENT,
+      fontSize: 12,
+      fontFamily: "monospace",
+      letterSpacing: "0.08em",
+      background: `${ACCENT}11`,
+    }}
+  >
+    {children}
+  </span>
+);
 
-  const metrics = [
-    { label: "Content Redundancy Reduction", value: 85, target: 70, unit: "%" },
-    { label: "Factual Accuracy Rate", value: 94, target: 90, unit: "%" },
-    { label: "Response Time", value: 3.4, target: 5.0, unit: "s" },
-    { label: "English Consistency", value: 98, target: 95, unit: "%" },
+const Divider = () => (
+  <div
+    style={{
+      width: 48,
+      height: 3,
+      background: `linear-gradient(90deg, ${ACCENT}, transparent)`,
+      borderRadius: 2,
+      margin: "16px 0 24px",
+    }}
+  />
+);
+
+const SectionLabel = ({ children }) => (
+  <p
+    style={{
+      fontFamily: "monospace",
+      fontSize: 11,
+      letterSpacing: "0.2em",
+      color: ACCENT,
+      textTransform: "uppercase",
+      marginBottom: 8,
+    }}
+  >
+    {children}
+  </p>
+);
+
+// ─── collapsible challenge card ────────────────────────────────────────────
+const ChallengeCard = ({ number, title, problem, solution }) => {
+  const [open, setOpen] = useState(false);
+  return (
+    <div
+      style={{
+        border: "1px solid #2a2a2a",
+        borderRadius: 12,
+        overflow: "hidden",
+        background: open ? "#1c1c1c" : "transparent",
+        transition: "background 0.25s",
+      }}
+    >
+      <button
+        onClick={() => setOpen((p) => !p)}
+        style={{
+          width: "100%",
+          display: "flex",
+          alignItems: "center",
+          gap: 16,
+          padding: "20px 24px",
+          background: "none",
+          border: "none",
+          cursor: "pointer",
+          textAlign: "left",
+        }}
+      >
+        <span
+          style={{
+            fontFamily: "monospace",
+            fontSize: 13,
+            color: ACCENT,
+            opacity: 0.6,
+            minWidth: 28,
+          }}
+        >
+          {String(number).padStart(2, "0")}
+        </span>
+        <span
+          style={{ flex: 1, color: "#e2e8f0", fontSize: 16, fontWeight: 600 }}
+        >
+          {title}
+        </span>
+        <span style={{ color: "#555" }}>
+          {open ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+        </span>
+      </button>
+      {open && (
+        <div style={{ padding: "0 24px 24px", display: "grid", gap: 14 }}>
+          <div
+            style={{
+              padding: "14px 18px",
+              borderRadius: 8,
+              background: "#ff000011",
+              borderLeft: "3px solid #ff6b6b",
+            }}
+          >
+            <p
+              style={{
+                fontSize: 11,
+                color: "#ff6b6b",
+                fontFamily: "monospace",
+                marginBottom: 6,
+              }}
+            >
+              THE PROBLEM
+            </p>
+            <p
+              style={{
+                color: "#94a3b8",
+                fontSize: 14,
+                lineHeight: 1.7,
+                margin: 0,
+              }}
+            >
+              {problem}
+            </p>
+          </div>
+          <div
+            style={{
+              padding: "14px 18px",
+              borderRadius: 8,
+              background: `${ACCENT}0d`,
+              borderLeft: `3px solid ${ACCENT}`,
+            }}
+          >
+            <p
+              style={{
+                fontSize: 11,
+                color: ACCENT,
+                fontFamily: "monospace",
+                marginBottom: 6,
+              }}
+            >
+              HOW WE SOLVED IT
+            </p>
+            <p
+              style={{
+                color: "#94a3b8",
+                fontSize: 14,
+                lineHeight: 1.7,
+                margin: 0,
+              }}
+            >
+              {solution}
+            </p>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+// ─── team member card ──────────────────────────────────────────────────────
+const TeamCard = ({ name, role, contributions, highlight }) => (
+  <div
+    style={{
+      padding: "24px",
+      border: "1px solid #2a2a2a",
+      borderRadius: 12,
+      background: "#111",
+      position: "relative",
+      overflow: "hidden",
+    }}
+  >
+    <div
+      style={{
+        position: "absolute",
+        top: 0,
+        left: 0,
+        right: 0,
+        height: 2,
+        background: highlight
+          ? `linear-gradient(90deg, ${ACCENT}, transparent)`
+          : "transparent",
+      }}
+    />
+    <p
+      style={{
+        color: "#e2e8f0",
+        fontWeight: 700,
+        fontSize: 16,
+        margin: "0 0 4px",
+      }}
+    >
+      {name}
+    </p>
+    <Tag>{role}</Tag>
+    <ul
+      style={{
+        margin: "16px 0 0",
+        padding: 0,
+        listStyle: "none",
+        display: "grid",
+        gap: 8,
+      }}
+    >
+      {contributions.map((c, i) => (
+        <li
+          key={i}
+          style={{ display: "flex", gap: 10, alignItems: "flex-start" }}
+        >
+          <span
+            style={{ color: ACCENT, marginTop: 6, flexShrink: 0, fontSize: 6 }}
+          >
+            ●
+          </span>
+          <span style={{ color: "#94a3b8", fontSize: 13, lineHeight: 1.65 }}>
+            {c}
+          </span>
+        </li>
+      ))}
+    </ul>
+  </div>
+);
+
+// ─── pipeline steps with sticky hover highlight ────────────────────────────
+const PIPELINE = [
+  {
+    step: "01",
+    label: "Content Retrieval",
+    desc: "NewsAPI fetches up to 200 articles daily across user-selected categories. Google Search API fills gaps and surfaces breaking stories that NewsAPI's 24-hour delay misses.",
+  },
+  {
+    step: "02",
+    label: "Full-Text Enrichment",
+    desc: "NewsAPI often returns only a title and short description. JSDOM + Readability scrape the full article text from source URLs, giving the AI model something real to work with.",
+  },
+  {
+    step: "03",
+    label: "Vector Embedding",
+    desc: "Article content is embedded into Pinecone's vector database, enabling semantic search — so when a user asks a question or expands an article, the system retrieves contextually relevant material rather than keyword matches.",
+  },
+  {
+    step: "04",
+    label: "AI Generation",
+    desc: "DeepSeek R1:14b, hosted locally via Ollama and shared across the team through Ngrok tunneling, synthesizes retrieved content into summaries, full articles, or query-driven deep dives. Prompt engineering enforces accuracy and English-only output.",
+  },
+  {
+    step: "05",
+    label: "Personalized Delivery",
+    desc: "The frontend, built in Next.js + TypeScript, presents the output at whatever detail level the user has configured — from a quick summary to an expanded multi-source analysis. Everything is tied to a user account managed via AWS Cognito.",
+  },
+];
+
+const PipelineSteps = () => {
+  const [active, setActive] = useState(0);
+
+  return (
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+        gap: 2,
+      }}
+    >
+      {PIPELINE.map((item, i) => {
+        const highlighted = active === i;
+        return (
+          <div
+            key={item.step}
+            onMouseEnter={() => setActive(i)}
+            style={{
+              padding: "28px 24px",
+              background: "#111",
+              position: "relative",
+              cursor: "default",
+              transition: "background 0.2s",
+            }}
+          >
+            {/* top highlight bar — always rendered, opacity drives visibility */}
+            <div
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                height: 2,
+                background: highlighted ? ACCENT : "#1e1e1e",
+                transition: "background 0.25s ease",
+              }}
+            />
+            <span
+              style={{
+                fontFamily: "monospace",
+                fontSize: 11,
+                color: ACCENT,
+                opacity: highlighted ? 1 : 0.5,
+                display: "block",
+                marginBottom: 12,
+                transition: "opacity 0.25s",
+              }}
+            >
+              {item.step}
+            </span>
+            <h3
+              style={{
+                color: highlighted ? "#f1f5f9" : "#94a3b8",
+                fontSize: 16,
+                fontWeight: 700,
+                margin: "0 0 10px",
+                transition: "color 0.25s",
+              }}
+            >
+              {item.label}
+            </h3>
+            <p
+              style={{
+                color: "#64748b",
+                fontSize: 13,
+                lineHeight: 1.7,
+                margin: 0,
+              }}
+            >
+              {item.desc}
+            </p>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
+const InsightPill = ({ label, value }) => (
+  <div
+    style={{
+      display: "flex",
+      flexDirection: "column",
+      gap: 4,
+      padding: "16px 20px",
+      border: "1px solid #2a2a2a",
+      borderRadius: 10,
+      background: "#111",
+    }}
+  >
+    <span
+      style={{
+        fontFamily: "monospace",
+        fontSize: 11,
+        color: "#555",
+        letterSpacing: "0.1em",
+      }}
+    >
+      {label}
+    </span>
+    <span style={{ color: "#e2e8f0", fontWeight: 700, fontSize: 18 }}>
+      {value}
+    </span>
+  </div>
+);
+
+// ─── main component ────────────────────────────────────────────────────────
+export default function ELMOCaseStudy() {
+  const challenges = [
+    {
+      title: "DeepSeek Hallucinations & Language Drift",
+      problem:
+        "Despite explicit instructions, DeepSeek R1:14b would occasionally fabricate facts or — more disruptively — respond entirely in Chinese instead of English. This was particularly problematic for a platform users are meant to trust for news accuracy.",
+      solution:
+        "We spent significant time dissecting our prompt structure, testing dozens of phrasings, and adding explicit language constraints. We also cross-referenced AI output against the source articles retrieved via Google Search API, which gave the model grounded context to anchor its responses. This process fundamentally changed how we thought about prompt design: structure and specificity matter far more than length or politeness.",
+    },
+    {
+      title: "AWS Cognito & Outdated Documentation",
+      problem:
+        "Setting up user authentication with AWS Cognito was our earliest major roadblock. The Amplify ecosystem was evolving rapidly, making official documentation inconsistent and sometimes outright wrong. Steps that should have taken an afternoon stretched into multi-day debugging sessions.",
+      solution:
+        "We leaned heavily on GitHub issue threads, developer forums, and cross-referencing multiple versions of AWS docs. The experience reinforced a lesson that only comes from building real systems: official documentation is a starting point, not a ground truth. We eventually stabilized our auth flow and documented our own internal steps for the team.",
+    },
+    {
+      title: "Running a 14B Model on Consumer Hardware",
+      problem:
+        "DeepSeek R1:14b is a demanding model. Not every team member had the hardware to run it locally at a usable speed — which created unequal access during development and made collaborative testing difficult.",
+      solution:
+        "One team member with a higher-spec machine hosted the model locally and exposed it to the rest of the team via Ngrok tunneling. This created a shared development endpoint the entire team could hit. It was a pragmatic workaround, though it also made us think carefully about what a production AI deployment needs to look like — which informed our future work recommendations around containerization with AWS Fargate.",
+    },
+    {
+      title: "NewsAPI's Limitations: Freshness & Category Depth",
+      problem:
+        "NewsAPI doesn't deliver real-time content — most articles were at least 24 hours old by the time they reached us. Additionally, the API's usable topic categories were more limited than anticipated, which threatened to shrink the range of user preferences we could offer.",
+      solution:
+        "We blended recent articles with slightly older content to maintain coverage continuity, and supplemented NewsAPI with the Google Search API to fill gaps. For categories, we pulled back to only the most reliably populated ones rather than offering empty or sparse topics. We also used open-source web scraping (JSDOM + Readability) to extract full article text from source URLs, since NewsAPI often returned only a title and description.",
+    },
+    {
+      title: "Balancing Generation Speed vs. Content Depth",
+      problem:
+        "Our AI article generation Lambda averaged around 14 seconds per call when using Deepseek with the Google Search API. For a news platform, that's a long time to wait. But cutting the depth of retrieval hurt content quality.",
+      solution:
+        "We implemented separate processing paths based on content type and user preference. Feature summarization and expansion operations — the user-facing AI calls — were tuned to run in 3–4 seconds by scoping the retrieval window and adjusting model parameters. The heavier bulk article population job (which inserts ~90 articles daily) was allowed to run longer as a background Lambda, invisible to users.",
+    },
   ];
 
-  const technologies = [
-    "DeepSeek R1:14b",
-    "Ollama API",
-    "RAG Architecture",
-    "Pinecone Vector DB",
-    "AWS Lambda",
-    "Prompt Engineering",
-    "NewsAPI",
-    "Google Search API",
-  ];
-
-  const achievements = [
+  const team = [
     {
-      icon: <Zap className="h-5 w-5" />,
-      title: "Performance",
-      description: "32% faster than target response time",
+      name: "Shaz Kumar",
+      role: "AI Engineer",
+      highlight: true,
+      contributions: [
+        "Integrated DeepSeek R1:14b via a fine-tuned pipeline optimized for news generation",
+        "Deployed the model locally using Ollama and exposed it via Ngrok for team-wide access during development",
+        "Designed and built the custom RAG framework combining NewsAPI retrieval, Google Search context injection, and Pinecone vector embeddings",
+        "Led prompt engineering work to reduce hallucinations and enforce English-only responses",
+      ],
     },
     {
-      icon: <Target className="h-5 w-5" />,
-      title: "Accuracy",
-      description: "94% factual accuracy in generated content",
+      name: "Isaac Hasan",
+      role: "Backend Developer",
+      contributions: [
+        "Created and managed AWS Lambda functions powering API integrations across the platform",
+        "Led the onboarding of the AI model and coordinated its connection to frontend and backend services",
+      ],
     },
     {
-      icon: <Users className="h-5 w-5" />,
-      title: "User Impact",
-      description: "78% improvement in comprehension scores",
+      name: "Abel Thomas",
+      role: "Backend Developer",
+      contributions: [
+        "Architected core backend operations within AWS: authentication, user data storage, and API routing",
+        "Integrated backend services with frontend components through AWS Amplify",
+      ],
     },
     {
-      icon: <TrendingUp className="h-5 w-5" />,
-      title: "Efficiency",
-      description: "23 minutes saved per user session",
+      name: "Avanthi Reddy",
+      role: "Frontend Developer",
+      contributions: [
+        "Designed the full user flow for ELMO with a focus on intuitive, modern UX",
+        "Implemented key frontend pages and interactive components",
+      ],
+    },
+    {
+      name: "Kshitij Kulshrestha",
+      role: "Frontend Developer",
+      contributions: [
+        "Established the design system for consistent branding across the platform",
+        "Refined article rendering, built the landing page, and designed the sidebar navigation flow",
+      ],
     },
   ];
 
   return (
-    <div className="min-h-screen bg-[#161616] text-slate-100">
-      {/* Hero Section */}
-      <section className="relative overflow-hidden py-24 px-4">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#FF7E77]/20 via-[#161616] to-[#FF7E77]/10 animate-pulse"></div>
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,126,119,0.1),transparent_50%)] animate-pulse"></div>
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(255,126,119,0.08),transparent_50%)]"></div>
+    <div
+      style={{
+        minHeight: "100vh",
+        background: "#0d0d0d",
+        color: "#e2e8f0",
+        fontFamily: "'Georgia', serif",
+      }}
+    >
+      {/* ── Hero ── */}
+      <section
+        style={{
+          minHeight: "90vh",
+          display: "flex",
+          alignItems: "center",
+          padding: "80px 5vw",
+          position: "relative",
+          overflow: "hidden",
+        }}
+      >
+        {/* background mesh */}
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            background: `
+              radial-gradient(ellipse 60% 50% at 15% 0%, ${ACCENT}18 0%, transparent 60%),
+              radial-gradient(ellipse 40% 40% at 85% 100%, ${ACCENT}0d 0%, transparent 60%)
+            `,
+            pointerEvents: "none",
+          }}
+        />
+        {/* grid lines */}
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            backgroundImage: `linear-gradient(#ffffff05 1px, transparent 1px), linear-gradient(90deg, #ffffff05 1px, transparent 1px)`,
+            backgroundSize: "60px 60px",
+            pointerEvents: "none",
+          }}
+        />
 
-        <div className="container mx-auto max-w-6xl relative z-10">
-          <div className="text-center space-y-8">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#FF7E77]/20 bg-[#FF7E77]/10 backdrop-blur-sm">
-              <Brain className="h-4 w-4 text-[#FF7E77]" />
-              <span className="text-sm font-medium text-slate-100">
-                AI Engineer Case Study
-              </span>
+        <div
+          style={{
+            position: "relative",
+            width: "100%",
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: "clamp(40px, 6vw, 100px)",
+            alignItems: "center",
+          }}
+        >
+          {/* Left: text */}
+          <div>
+            <div
+              style={{
+                display: "flex",
+                gap: 10,
+                marginBottom: 32,
+                flexWrap: "wrap",
+              }}
+            >
+              <Tag>CS 4485.0W1 · UT Dallas</Tag>
+              <Tag>Jan – May 2025</Tag>
+              <Tag>Team of 5</Tag>
             </div>
 
-            <div className="space-y-6">
-              <h1 className="font-playfair text-6xl md:text-8xl font-bold text-balance text-slate-100">
-                ELMO Project
-              </h1>
-              <p className="text-xl md:text-2xl text-pretty max-w-4xl mx-auto leading-relaxed text-slate-400">
-                Revolutionizing News Consumption Through Advanced AI-Powered
-                Content Generation & Intelligent Aggregation
-              </p>
-            </div>
+            <h1
+              style={{
+                fontSize: "clamp(52px, 7vw, 100px)",
+                fontWeight: 900,
+                lineHeight: 0.92,
+                margin: "0 0 28px",
+                color: "#f1f5f9",
+                letterSpacing: "-0.03em",
+              }}
+            >
+              ELMO
+            </h1>
 
-            <div className="flex flex-wrap justify-center gap-4 mt-12">
-              <Button
-                size="lg"
-                className="gap-2 shadow-lg hover:shadow-xl transition-all duration-300 bg-[#FF7E77] hover:bg-[#FF7E77]/90 text-white border-0"
-                onClick={() =>
-                  window.open(
-                    "https://github.com/Sharktail001/ELMO-Capstone-Proj",
-                    "_blank"
-                  )
-                }
-              >
-                <Github className="h-5 w-5" />
-                View Repository
-              </Button>
-            </div>
+            <p
+              style={{
+                fontSize: "clamp(15px, 1.5vw, 20px)",
+                color: "#94a3b8",
+                lineHeight: 1.75,
+                margin: "0 0 40px",
+              }}
+            >
+              An AI-powered news platform that aggregates content from across
+              the web, eliminates redundancy, and delivers personalized
+              summaries — built in one semester by five students at the
+              University of Texas at Dallas.
+            </p>
+
+            <a
+              href="https://github.com/Sharktail001/ELMO-Capstone-Proj"
+              target="_blank"
+              rel="noreferrer"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 10,
+                padding: "14px 28px",
+                background: ACCENT,
+                color: "#fff",
+                borderRadius: 8,
+                fontFamily: "sans-serif",
+                fontSize: 14,
+                fontWeight: 600,
+                textDecoration: "none",
+                letterSpacing: "0.02em",
+              }}
+            >
+              <Github size={16} /> View Repository <ArrowRight size={14} />
+            </a>
           </div>
-        </div>
-      </section>
 
-      {/* Project Overview */}
-      <section className="py-20 px-4">
-        <div className="container mx-auto max-w-6xl">
-          <div className="grid lg:grid-cols-2 gap-16 items-start">
-            <div className="space-y-8">
-              <div className="space-y-4">
-                <h2 className="font-playfair text-4xl font-bold text-slate-100">
-                  Executive Summary
-                </h2>
-                <div className="w-20 h-1 rounded-full bg-gradient-to-r from-[#FF7E77] to-[#FF9F9A]"></div>
-              </div>
-
-              <p className="text-lg leading-relaxed text-slate-400">
-                As the AI Engineer for ELMO, I architected and implemented an
-                intelligent news aggregation system that fundamentally
-                transformed information consumption patterns. By seamlessly
-                integrating cutting-edge language models with real-time data
-                retrieval mechanisms, I developed a sophisticated AI pipeline
-                capable of generating contextually relevant, non-redundant news
-                content at scale.
-              </p>
-
-              <div className="grid grid-cols-2 gap-6">
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3 p-3 rounded-lg border border-slate-700 bg-slate-800/50">
-                    <Badge
-                      variant="outline"
-                      className="border-[#FF7E77]/30 text-slate-100"
-                    >
-                      Role
-                    </Badge>
-                    <span className="font-medium text-slate-100">
-                      AI Engineer
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-3 p-3 rounded-lg border border-slate-700 bg-slate-800/50">
-                    <Badge
-                      variant="outline"
-                      className="border-[#FF7E77]/30 text-slate-100"
-                    >
-                      Duration
-                    </Badge>
-                    <span className="font-medium text-slate-100">
-                      Jan - May 2025
-                    </span>
-                  </div>
-                </div>
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3 p-3 rounded-lg border border-slate-700 bg-slate-800/50">
-                    <Badge
-                      variant="outline"
-                      className="border-[#FF7E77]/30 text-slate-100"
-                    >
-                      Team
-                    </Badge>
-                    <span className="font-medium text-slate-100">
-                      5 members
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-3 p-3 rounded-lg border border-slate-700 bg-slate-800/50">
-                    <Badge
-                      variant="outline"
-                      className="border-[#FF7E77]/30 text-slate-100"
-                    >
-                      Institution
-                    </Badge>
-                    <span className="font-medium text-slate-100">
-                      UT Dallas
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="grid gap-6">
-              {achievements.map((achievement, index) => (
-                <Card
-                  key={index}
-                  className="group hover:shadow-lg transition-all duration-300 backdrop-blur-sm bg-slate-800/50 border-slate-700 text-slate-100"
+          {/* Right: product screenshot */}
+          <div
+            style={{
+              position: "relative",
+              borderRadius: 16,
+              overflow: "hidden",
+              boxShadow: `0 0 0 1px #2a2a2a, 0 40px 80px -20px #000000cc, 0 0 60px ${ACCENT}22`,
+            }}
+          >
+            {/* browser chrome strip */}
+            <div
+              style={{
+                background: "#1a1a1a",
+                padding: "10px 16px",
+                display: "flex",
+                alignItems: "center",
+                gap: 6,
+                borderBottom: "1px solid #2a2a2a",
+              }}
+            >
+              <div
+                style={{
+                  width: 10,
+                  height: 10,
+                  borderRadius: "50%",
+                  background: "#ff5f56",
+                }}
+              />
+              <div
+                style={{
+                  width: 10,
+                  height: 10,
+                  borderRadius: "50%",
+                  background: "#ffbd2e",
+                }}
+              />
+              <div
+                style={{
+                  width: 10,
+                  height: 10,
+                  borderRadius: "50%",
+                  background: "#27c93f",
+                }}
+              />
+              <div
+                style={{
+                  flex: 1,
+                  marginLeft: 12,
+                  background: "#222",
+                  borderRadius: 4,
+                  height: 22,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <span
+                  style={{
+                    color: "#555",
+                    fontSize: 10,
+                    fontFamily: "monospace",
+                  }}
                 >
-                  <CardContent className="p-6">
-                    <div className="flex items-center gap-4">
-                      <div className="p-3 rounded-xl bg-[#FF7E77]/10 group-hover:bg-[#FF7E77]/20 transition-colors text-[#FF7E77]">
-                        {achievement.icon}
-                      </div>
-                      <div className="space-y-1">
-                        <h3 className="font-semibold text-lg text-slate-100">
-                          {achievement.title}
-                        </h3>
-                        <p className="text-slate-400">
-                          {achievement.description}
-                        </p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+                  elmo.app
+                </span>
+              </div>
             </div>
+            <Image
+              src="/assets/elmo-screenshot.png"
+              alt="ELMO product screenshot"
+              width={2000}
+              height={2000}
+              className="w-full block"
+            />
           </div>
         </div>
       </section>
 
-      {/* Key Metrics */}
-      <section className="py-20 px-4 bg-slate-800/20">
-        <div className="container mx-auto max-w-6xl">
-          <div className="text-center space-y-4 mb-16">
-            <h2 className="font-playfair text-4xl font-bold text-slate-100">
-              Performance Metrics
+      {/* ── The Problem ── */}
+      <section
+        style={{ padding: "100px 5vw", maxWidth: 1200, margin: "0 auto" }}
+      >
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: 80,
+            alignItems: "start",
+          }}
+        >
+          <div>
+            <SectionLabel>01 — The Problem</SectionLabel>
+            <h2
+              style={{
+                fontSize: "clamp(28px, 4vw, 42px)",
+                fontWeight: 800,
+                lineHeight: 1.2,
+                margin: "0 0 8px",
+                letterSpacing: "-0.02em",
+              }}
+            >
+              Too much news.
+              <br />
+              Too little signal.
             </h2>
-            <div className="w-20 h-1 rounded-full mx-auto bg-gradient-to-r from-[#FF7E77] to-[#FF9F9A]"></div>
-            <p className="text-lg max-w-2xl mx-auto text-slate-400">
-              Quantifiable results demonstrating the impact and effectiveness of
-              the AI engineering solutions
+            <Divider />
+            <p style={{ color: "#94a3b8", lineHeight: 1.85, fontSize: 16 }}>
+              The average person trying to stay informed today must navigate
+              dozens of sources, frequently encountering the same story
+              rewritten three different ways before finding anything new. The
+              fragmentation is exhausting — and the cure is often worse than the
+              disease. Algorithmic feeds designed to keep you engaged tend to
+              deepen filter bubbles, showing you content that confirms what you
+              already believe rather than broadening your perspective.
+            </p>
+            <p
+              style={{
+                color: "#94a3b8",
+                lineHeight: 1.85,
+                fontSize: 16,
+                marginTop: 16,
+              }}
+            >
+              ELMO was built to solve exactly this. Rather than adding yet
+              another news feed, we built a platform that <em>synthesizes</em> —
+              pulling from multiple sources, stripping out the redundancy, and
+              letting users control how deep they want to go on any given topic.
             </p>
           </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {metrics.map((metric, index) => (
-              <Card
-                key={index}
-                className="text-center p-8 hover:shadow-xl transition-all duration-300 backdrop-blur-sm group bg-slate-800/50 border-slate-700"
+          <div style={{ display: "grid", gap: 16, paddingTop: 20 }}>
+            {[
+              [
+                "Core Goal",
+                "Aggregate news without repeating it — comprehensive coverage, zero redundancy",
+              ],
+              [
+                "User Control",
+                "Choose between concise summaries or full deep-dives based on your time and interest",
+              ],
+              [
+                "Source Transparency",
+                "Users can see and manage where their content comes from",
+              ],
+              [
+                "Live Context",
+                "RAG pipeline brings in articles published within the last 24 hours, beyond any model's training data",
+              ],
+            ].map(([label, desc]) => (
+              <div
+                key={label}
+                style={{
+                  padding: "20px 22px",
+                  border: "1px solid #1e1e1e",
+                  borderRadius: 10,
+                  background: "#111",
+                }}
               >
-                <CardContent className="space-y-6">
-                  <div className="space-y-2">
-                    <div className="text-4xl font-bold group-hover:scale-110 transition-transform duration-300 text-[#FF7E77]">
-                      {metric.value}
-                      <span className="text-2xl">{metric.unit}</span>
-                    </div>
-                    <h3 className="text-sm font-medium uppercase tracking-wider text-slate-400">
-                      {metric.label}
-                    </h3>
-                  </div>
+                <p
+                  style={{
+                    color: ACCENT,
+                    fontSize: 12,
+                    fontFamily: "monospace",
+                    margin: "0 0 6px",
+                    letterSpacing: "0.08em",
+                  }}
+                >
+                  {label}
+                </p>
+                <p
+                  style={{
+                    color: "#94a3b8",
+                    fontSize: 14,
+                    lineHeight: 1.65,
+                    margin: 0,
+                  }}
+                >
+                  {desc}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
-                  <div className="space-y-3">
-                    <Progress
-                      value={(metric.value / (metric.target * 1.2)) * 100}
-                      className="h-3"
+      {/* ── How It Works ── */}
+      <section style={{ padding: "80px 5vw", background: "#0f0f0f" }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+          <SectionLabel>02 — How It Works</SectionLabel>
+          <h2
+            style={{
+              fontSize: "clamp(28px, 4vw, 42px)",
+              fontWeight: 800,
+              lineHeight: 1.2,
+              margin: "0 0 8px",
+              letterSpacing: "-0.02em",
+            }}
+          >
+            The Content Pipeline
+          </h2>
+          <Divider />
+          <p
+            style={{
+              color: "#94a3b8",
+              lineHeight: 1.85,
+              fontSize: 16,
+              maxWidth: 680,
+              marginBottom: 48,
+            }}
+          >
+            ELMO's architecture is a deliberate layering of three systems: a
+            cloud backend on AWS, a real-time news retrieval layer, and an AI
+            generation pipeline driven by DeepSeek R1:14b. Each layer has a
+            specific job, and they're connected by a custom RAG framework built
+            by the AI Engineer on the team.
+          </p>
+
+          {/* pipeline steps */}
+          <PipelineSteps />
+
+          {/* real perf numbers — marquee */}
+          <div style={{ marginTop: 48 }}>
+            <p
+              style={{
+                fontFamily: "monospace",
+                fontSize: 11,
+                color: "#555",
+                letterSpacing: "0.15em",
+                marginBottom: 16,
+                textTransform: "uppercase",
+              }}
+            >
+              Measured in production
+            </p>
+
+            {/* marquee container */}
+            <style>{`
+              @keyframes marquee {
+                0%   { transform: translateX(0); }
+                100% { transform: translateX(-50%); }
+              }
+              .metrics-track {
+                display: flex;
+                width: max-content;
+                animation: marquee 22s linear infinite;
+              }
+              .metrics-track:hover {
+                animation-play-state: paused;
+              }
+            `}</style>
+
+            <div
+              style={{
+                overflow: "hidden",
+                WebkitMaskImage:
+                  "linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%)",
+                maskImage:
+                  "linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%)",
+              }}
+            >
+              <div className="metrics-track">
+                {/* render the list twice so the loop is seamless */}
+                {[0, 1].map((copy) => (
+                  <div
+                    key={copy}
+                    style={{ display: "flex", gap: 12, paddingRight: 12 }}
+                  >
+                    <InsightPill
+                      label="Article summarization / expansion"
+                      value="~3–4 seconds"
                     />
-                    <p className="text-xs text-slate-400">
-                      Target: {metric.target}
-                      {metric.unit}
-                    </p>
+                    <InsightPill
+                      label="Page load (Home — 200 articles)"
+                      value="~200 ms"
+                    />
+                    <InsightPill label="Article view load" value="~60 ms" />
+                    <InsightPill
+                      label="Daily bulk article Lambda"
+                      value="~5.6 min (background)"
+                    />
+                    <InsightPill label="Auth page load" value="~200 ms" />
                   </div>
-                </CardContent>
-              </Card>
+                ))}
+              </div>
+            </div>
+
+            <p
+              style={{
+                color: "#555",
+                fontSize: 13,
+                marginTop: 12,
+                fontFamily: "sans-serif",
+              }}
+            >
+              The 14-second AI generation Lambda runs in the background — users
+              only experience the 3–4s summarization endpoints.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ── AWS Stack ── */}
+      <section style={{ padding: "80px 5vw" }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+          <SectionLabel>03 — Infrastructure</SectionLabel>
+          <h2
+            style={{
+              fontSize: "clamp(28px, 4vw, 42px)",
+              fontWeight: 800,
+              lineHeight: 1.2,
+              margin: "0 0 8px",
+              letterSpacing: "-0.02em",
+            }}
+          >
+            Built exclusively on AWS
+          </h2>
+          <Divider />
+          <p
+            style={{
+              color: "#94a3b8",
+              lineHeight: 1.85,
+              fontSize: 16,
+              maxWidth: 680,
+              marginBottom: 40,
+            }}
+          >
+            Rather than mixing cloud providers, we committed entirely to the AWS
+            ecosystem — both to keep our architecture coherent and because the
+            capstone gave us a chance to understand how these services actually
+            fit together in a real application.
+          </p>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+              gap: 16,
+            }}
+          >
+            {[
+              {
+                service: "Amplify",
+                purpose:
+                  "The connective tissue between our Next.js frontend and all AWS backend services. Handles deployment and resource management.",
+              },
+              {
+                service: "Lambda",
+                purpose:
+                  "Serverless execution for AI article generation, daily bulk article population, API routing, and database operations. No always-on servers.",
+              },
+              {
+                service: "Cognito",
+                purpose:
+                  "User authentication, account creation, and session management. Proved to be our steepest early learning curve — see the Challenges section.",
+              },
+              {
+                service: "DynamoDB",
+                purpose:
+                  "Four tables: Users, Articles, SavedArticles, and LastViewedArticles. NoSQL made sense for the varied shape of article metadata.",
+              },
+              {
+                service: "API Gateway",
+                purpose:
+                  "Secure, authenticated exposure of Lambda functions to the frontend. Provides rate limiting and request logging.",
+              },
+              {
+                service: "EventBridge",
+                purpose:
+                  "Scheduled triggers for background tasks like the daily article curation Lambda — so 200 fresh articles are ready before users open the app each morning.",
+              },
+            ].map((s) => (
+              <div
+                key={s.service}
+                style={{
+                  padding: "22px 22px",
+                  border: "1px solid #1e1e1e",
+                  borderRadius: 10,
+                  background: "#111",
+                }}
+              >
+                <div
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 8,
+                    marginBottom: 10,
+                  }}
+                >
+                  <div
+                    style={{
+                      width: 6,
+                      height: 6,
+                      borderRadius: "50%",
+                      background: ACCENT,
+                      flexShrink: 0,
+                    }}
+                  />
+                  <span
+                    style={{
+                      color: "#f1f5f9",
+                      fontWeight: 700,
+                      fontSize: 15,
+                      fontFamily: "sans-serif",
+                    }}
+                  >
+                    AWS {s.service}
+                  </span>
+                </div>
+                <p
+                  style={{
+                    color: "#64748b",
+                    fontSize: 13,
+                    lineHeight: 1.7,
+                    margin: 0,
+                    fontFamily: "sans-serif",
+                  }}
+                >
+                  {s.purpose}
+                </p>
+              </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Technical Details */}
-      <section className="py-20 px-4">
-        <div className="container mx-auto max-w-6xl">
-          <div className="text-center space-y-4 mb-16">
-            <h2 className="font-playfair text-4xl font-bold text-slate-100">
-              Technical Implementation
-            </h2>
-            <div className="w-20 h-1 rounded-full mx-auto bg-gradient-to-r from-[#FF7E77] to-[#FF9F9A]"></div>
-          </div>
-
-          <div className="space-y-12">
-            {/* AI Architecture Section */}
-            <Card className="backdrop-blur-sm bg-slate-800/50 border-slate-700 text-slate-100">
-              <CardHeader className="pb-6">
-                <div className="flex items-center gap-3">
-                  <Cpu className="h-6 w-6 text-[#FF7E77]" />
-                  <div>
-                    <CardTitle className="text-2xl text-slate-100">
-                      AI Architecture
-                    </CardTitle>
-                    <CardDescription className="text-base mt-2 text-slate-400">
-                      Integrated DeepSeek R1:14b with custom deployment and
-                      enhancement pipeline
-                    </CardDescription>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-8">
-                <div className="p-6 rounded-xl font-mono text-sm overflow-x-auto border border-slate-700 bg-slate-700/50">
-                  <pre className="text-slate-400">{`┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│   DeepSeek R1   │    │   Ollama API     │    │  Custom RAG     │
-│   (14B params)  │◄──►│   (Local Host)   │◄──►│   Framework     │
-└─────────────────┘    └──────────────────┘    └─────────────────┘
-         ▲                        ▲                       ▲
-         │                        │                       │
-         ▼                        ▼                       ▼
-┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│  Google Search  │    │   NewsAPI        │    │   Pinecone      │
-│      API        │    │   Integration    │    │ Vector Store    │
-└─────────────────┘    └──────────────────┘    └─────────────────┘`}</pre>
-                </div>
-                <div className="grid md:grid-cols-2 gap-8">
-                  <Card className="p-6 bg-[#FF7E77]/5 border-[#FF7E77]/20">
-                    <h4 className="font-semibold mb-4 text-lg flex items-center gap-2">
-                      <Target className="h-5 w-5 text-[#FF7E77]" />
-                      <span className="text-slate-100">Key Achievements</span>
-                    </h4>
-                    <ul className="space-y-3 text-slate-400">
-                      <li className="flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full bg-[#FF7E77]"></div>
-                        Reduced hallucination rate from 23% to &lt;5%
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full bg-[#FF7E77]"></div>
-                        Achieved 98% English-only response rate
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full bg-[#FF7E77]"></div>
-                        Maintained 94% factual accuracy
-                      </li>
-                    </ul>
-                  </Card>
-                  <Card className="p-6 bg-[#FF9F9A]/5 border-[#FF9F9A]/20">
-                    <h4 className="font-semibold mb-4 text-lg flex items-center gap-2">
-                      <TrendingUp className="h-5 w-5 text-[#FF9F9A]" />
-                      <span className="text-slate-100">Performance Impact</span>
-                    </h4>
-                    <ul className="space-y-3 text-slate-400">
-                      <li className="flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full bg-[#FF9F9A]"></div>
-                        99.2% API uptime during development
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full bg-[#FF9F9A]"></div>
-                        80% reduction in local resource requirements
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full bg-[#FF9F9A]"></div>
-                        Seamless team collaboration enabled
-                      </li>
-                    </ul>
-                  </Card>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* RAG Framework Section */}
-            <Card className="backdrop-blur-sm bg-slate-800/50 border-slate-700 text-slate-100">
-              <CardHeader className="pb-6">
-                <div className="flex items-center gap-3">
-                  <Database className="h-6 w-6 text-[#FF7E77]" />
-                  <div>
-                    <CardTitle className="text-2xl text-slate-100">
-                      Custom RAG Framework
-                    </CardTitle>
-                    <CardDescription className="text-base mt-2 text-slate-400">
-                      Built sophisticated Retrieval Augmented Generation
-                      combining real-time news data with AI generation
-                    </CardDescription>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-8">
-                <div className="grid md:grid-cols-3 gap-6">
-                  <Card className="text-center p-6 hover:bg-[#FF7E77]/10 transition-colors bg-[#FF7E77]/5 border-[#FF7E77]/20">
-                    <div className="space-y-3">
-                      <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto bg-[#FF7E77]/20">
-                        <Database className="h-6 w-6 text-[#FF7E77]" />
-                      </div>
-                      <h4 className="font-semibold text-lg text-slate-100">
-                        Multi-source Retrieval
-                      </h4>
-                      <p className="text-sm text-slate-400">
-                        NewsAPI + Google Search with intelligent filtering and
-                        deduplication
-                      </p>
-                    </div>
-                  </Card>
-                  <Card className="text-center p-6 hover:bg-[#FF9F9A]/10 transition-colors bg-[#FF9F9A]/5 border-[#FF9F9A]/20">
-                    <div className="space-y-3">
-                      <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto bg-[#FF9F9A]/20">
-                        <Target className="h-6 w-6 text-[#FF9F9A]" />
-                      </div>
-                      <h4 className="font-semibold text-lg text-slate-100">
-                        Content Deduplication
-                      </h4>
-                      <p className="text-sm text-slate-400">
-                        Semantic similarity analysis to eliminate redundancy
-                        across sources
-                      </p>
-                    </div>
-                  </Card>
-                  <Card className="text-center p-6 hover:bg-[#FF7E77]/10 transition-colors bg-[#FF7E77]/5 border-[#FF7E77]/20">
-                    <div className="space-y-3">
-                      <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto bg-[#FF7E77]/20">
-                        <Brain className="h-6 w-6 text-[#FF7E77]" />
-                      </div>
-                      <h4 className="font-semibold text-lg text-slate-100">
-                        Dynamic Adaptation
-                      </h4>
-                      <p className="text-sm text-slate-400">
-                        Adjusts output complexity based on user preferences and
-                        content type
-                      </p>
-                    </div>
-                  </Card>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Challenges Section */}
-            <Card className="backdrop-blur-sm bg-slate-800/50 border-slate-700 text-slate-100">
-              <CardHeader className="pb-6">
-                <div className="flex items-center gap-3">
-                  <Zap className="h-6 w-6 text-[#FF7E77]" />
-                  <div>
-                    <CardTitle className="text-2xl text-slate-100">
-                      Technical Challenges & Solutions
-                    </CardTitle>
-                    <CardDescription className="text-base mt-2 text-slate-400">
-                      Key obstacles overcome during development and innovative
-                      solutions implemented
-                    </CardDescription>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-6">
-                  {[
-                    {
-                      title: "Model Hallucination & Language Consistency",
-                      problem:
-                        "DeepSeek occasionally generated false information or responded in Chinese instead of English",
-                      solution:
-                        "Implemented multi-layered validation with language detection, fact verification against sources, and prompt engineering refinements",
-                    },
-                    {
-                      title: "Real-time Information Integration",
-                      problem:
-                        "Language models have training data cutoffs, missing recent events and breaking news",
-                      solution:
-                        "Built dynamic context injection system fetching latest articles within 24 hours and semantic relevance scoring",
-                    },
-                    {
-                      title: "Content Quality vs. Speed Trade-off",
-                      problem:
-                        "Balancing comprehensive content generation with user experience expectations for response time",
-                      solution:
-                        "Implemented adaptive processing pipeline with different model configurations based on content complexity and user preferences",
-                    },
-                  ].map((challenge, index) => (
-                    <Card
-                      key={index}
-                      className={`backdrop-blur-sm transition-all duration-300 transform hover:scale-[1.02] hover:shadow-xl bg-slate-800/50 border-slate-700 group`}
-                      onMouseEnter={() => toggleSection(`challenge-${index}`)}
-                      onMouseLeave={() => toggleSection(`challenge-${index}`)}
-                    >
-                      <CardHeader>
-                        <CardTitle className="flex items-center justify-between text-xl">
-                          <span className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-[#FF7E77]/10 group-hover:bg-[#FF7E77]/20 transition-colors">
-                              <span className="font-bold text-sm text-[#FF7E77]">
-                                {index + 1}
-                              </span>
-                            </div>
-                            <span className="text-slate-100">
-                              {challenge.title}
-                            </span>
-                          </span>
-                          <div className="text-slate-400 group-hover:text-[#FF7E77] transition-colors">
-                            {expandedSections[`challenge-${index}`] ? (
-                              <ChevronUp className="h-4 w-4" />
-                            ) : (
-                              <ChevronDown className="h-4 w-4" />
-                            )}
-                          </div>
-                        </CardTitle>
-                      </CardHeader>
-                      {expandedSections[`challenge-${index}`] && (
-                        <CardContent
-                          className="space-y-6 pt-0 animate-fadeIn overflow-hidden"
-                          style={{
-                            animation: "fadeIn 0.3s ease-in-out",
-                          }}
-                        >
-                          <div className="p-4 rounded-lg border bg-red-500/5 border-red-500/20">
-                            <h4 className="font-semibold mb-3 flex items-center gap-2 text-red-400">
-                              <div className="w-2 h-2 rounded-full bg-red-400"></div>
-                              Problem:
-                            </h4>
-                            <p className="text-slate-400">
-                              {challenge.problem}
-                            </p>
-                          </div>
-                          <div className="p-4 rounded-lg border bg-[#FF7E77]/5 border-[#FF7E77]/20">
-                            <h4 className="font-semibold mb-3 flex items-center gap-2 text-[#FF7E77]">
-                              <div className="w-2 h-2 rounded-full bg-[#FF7E77]"></div>
-                              Solution:
-                            </h4>
-                            <p className="text-slate-400">
-                              {challenge.solution}
-                            </p>
-                          </div>
-                        </CardContent>
-                      )}
-                    </Card>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Innovation Section */}
-            <Card className="backdrop-blur-sm bg-slate-800/50 border-slate-700 text-slate-100">
-              <CardHeader className="pb-6">
-                <div className="flex items-center gap-3">
-                  <Brain className="h-6 w-6 text-[#FF7E77]" />
-                  <div>
-                    <CardTitle className="text-2xl text-slate-100">
-                      Technical Innovation
-                    </CardTitle>
-                    <CardDescription className="text-base mt-2 text-slate-400">
-                      Novel approaches and frameworks developed to solve complex
-                      AI engineering challenges
-                    </CardDescription>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="grid md:grid-cols-2 gap-8">
-                  <Card className="backdrop-blur-sm hover:shadow-lg transition-all duration-300 bg-slate-800/50 border-slate-700">
-                    <CardHeader className="pb-4">
-                      <CardTitle className="flex items-center gap-3 text-xl">
-                        <Brain className="h-6 w-6 text-[#FF7E77]" />
-                        <span className="text-slate-100">
-                          Hybrid RAG Architecture
-                        </span>
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <ul className="space-y-3">
-                        <li className="flex items-start gap-3">
-                          <div className="w-2 h-2 rounded-full mt-2 bg-[#FF7E77]"></div>
-                          <div className="text-slate-400">
-                            <strong className="text-[#FF7E77]">
-                              Semantic retrieval
-                            </strong>{" "}
-                            using vector embeddings for contextual relevance
-                          </div>
-                        </li>
-                        <li className="flex items-start gap-3">
-                          <div className="w-2 h-2 rounded-full mt-2 bg-[#FF7E77]"></div>
-                          <div className="text-slate-400">
-                            <strong className="text-[#FF7E77]">
-                              Temporal retrieval
-                            </strong>{" "}
-                            prioritizing recent content and breaking news
-                          </div>
-                        </li>
-                        <li className="flex items-start gap-3">
-                          <div className="w-2 h-2 rounded-full mt-2 bg-[#FF7E77]"></div>
-                          <div className="text-slate-400">
-                            <strong className="text-[#FF7E77]">
-                              Source-diverse retrieval
-                            </strong>{" "}
-                            ensuring perspective variety and bias mitigation
-                          </div>
-                        </li>
-                      </ul>
-                    </CardContent>
-                  </Card>
-
-                  <Card className="backdrop-blur-sm hover:shadow-lg transition-all duration-300 bg-slate-800/50 border-slate-700">
-                    <CardHeader className="pb-4">
-                      <CardTitle className="flex items-center gap-3 text-xl">
-                        <Target className="h-6 w-6 text-[#FF9F9A]" />
-                        <span className="text-slate-100">
-                          Source Transparency Framework
-                        </span>
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <ul className="space-y-3">
-                        <li className="flex items-start gap-3">
-                          <div className="w-2 h-2 rounded-full mt-2 bg-[#FF9F9A]"></div>
-                          <div className="text-slate-400">
-                            Comprehensive source tracking and attribution with
-                            hyperlink preservation
-                          </div>
-                        </li>
-                        <li className="flex items-start gap-3">
-                          <div className="w-2 h-2 rounded-full mt-2 bg-[#FF9F9A]"></div>
-                          <div className="text-slate-400">
-                            Credibility scoring and bias analysis integration
-                          </div>
-                        </li>
-                        <li className="flex items-start gap-3">
-                          <div className="w-2 h-2 rounded-full mt-2 bg-[#FF9F9A]"></div>
-                          <div className="text-slate-400">
-                            Fact-check history integration and verification
-                            workflows
-                          </div>
-                        </li>
-                      </ul>
-                    </CardContent>
-                  </Card>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* Technologies Used */}
-      <section className="py-20 px-4 bg-slate-800/20">
-        <div className="container mx-auto max-w-6xl">
-          <div className="text-center space-y-4 mb-16">
-            <h2 className="font-playfair text-4xl font-bold text-slate-100">
-              Technologies Mastered
-            </h2>
-            <div className="w-20 h-1 rounded-full mx-auto bg-gradient-to-r from-[#FF7E77] to-[#FF9F9A]"></div>
-            <p className="text-lg max-w-2xl mx-auto text-slate-400">
-              Cutting-edge AI and cloud technologies leveraged to build a
-              scalable, intelligent news platform
-            </p>
-          </div>
-
-          <div className="flex flex-wrap justify-center gap-4">
-            {technologies.map((tech, index) => (
-              <Badge
-                key={index}
-                variant="secondary"
-                className="px-6 py-3 text-sm font-medium hover:bg-[#FF7E77]/10 hover:border-[#FF7E77]/30 transition-all duration-300 cursor-default bg-slate-800/50 border-slate-700 text-slate-100"
-              >
-                {tech}
-              </Badge>
+      {/* ── Challenges ── */}
+      <section style={{ padding: "80px 5vw", background: "#0f0f0f" }}>
+        <div style={{ maxWidth: 800, margin: "0 auto" }}>
+          <SectionLabel>04 — What Broke</SectionLabel>
+          <h2
+            style={{
+              fontSize: "clamp(28px, 4vw, 42px)",
+              fontWeight: 800,
+              lineHeight: 1.2,
+              margin: "0 0 8px",
+              letterSpacing: "-0.02em",
+            }}
+          >
+            The challenges that shaped ELMO
+          </h2>
+          <Divider />
+          <p
+            style={{
+              color: "#94a3b8",
+              lineHeight: 1.85,
+              fontSize: 16,
+              marginBottom: 36,
+            }}
+          >
+            Every significant technical decision we made was driven by something
+            breaking first. Click each challenge to read what actually happened
+            and how we got through it.
+          </p>
+          <div style={{ display: "grid", gap: 8 }}>
+            {challenges.map((c, i) => (
+              <ChallengeCard key={i} number={i + 1} {...c} />
             ))}
           </div>
         </div>
       </section>
 
-      {/* Contact Section */}
-      <section className="py-20 px-4">
-        <div className="container mx-auto max-w-4xl text-center">
-          <div className="space-y-8">
-            <div className="space-y-4">
-              <h2 className="font-playfair text-4xl font-bold text-slate-100">
-                Let&apos;s Connect
-              </h2>
-              <div className="w-20 h-1 rounded-full mx-auto bg-gradient-to-r from-[#FF7E77] to-[#FF9F9A]"></div>
-            </div>
+      {/* ── Key Decisions ── */}
+      <section style={{ padding: "80px 5vw" }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+          <SectionLabel>05 — Decisions</SectionLabel>
+          <h2
+            style={{
+              fontSize: "clamp(28px, 4vw, 42px)",
+              fontWeight: 800,
+              lineHeight: 1.2,
+              margin: "0 0 8px",
+              letterSpacing: "-0.02em",
+            }}
+          >
+            Design choices worth understanding
+          </h2>
+          <Divider />
+          <div
+            style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}
+          >
+            {[
+              {
+                title: "Why RAG over fine-tuning?",
+                body: "We experimented with the idea of fine-tuning DeepSeek on news data, but the effort-to-gain ratio didn't make sense for a semester-long project. RAG gave us something more practically valuable: the ability to inject yesterday's news into every generation call, making the model's output genuinely current rather than frozen at a training cutoff.",
+              },
+              {
+                title: "Why Pinecone for vector search?",
+                body: "We needed semantic search — the ability to find articles that are conceptually related to a user's query, not just keyword-matched. Pinecone's managed vector database let us skip the infrastructure complexity and focus on the embedding pipeline. It also made the article expansion feature possible: when a user expands an article, we retrieve semantically similar content from other sources and weave it in.",
+              },
+              {
+                title: "Why Ollama for local model serving?",
+                body: "Running DeepSeek locally via Ollama meant we had full control over the model and zero per-token API costs during development. The tradeoff was hardware dependency — not everyone on the team had a machine that could run a 14B parameter model. Ngrok tunneling solved the access problem for development, and informed our future recommendation to containerize with AWS Fargate for production.",
+              },
+              {
+                title: "Why three separate article detail levels?",
+                body: "User research in the news space consistently shows that different contexts call for different depths: a commuter wants a headline and three sentences, a researcher wants the full story with sources. We built two one-tap AI calls — 'Simplify' and 'Expand' — on every article view, so users can go deeper or shallower without changing screens. The design philosophy was to anticipate user needs rather than require users to navigate to a settings page.",
+              },
+            ].map((d) => (
+              <div
+                key={d.title}
+                style={{
+                  padding: "28px",
+                  border: "1px solid #1e1e1e",
+                  borderRadius: 12,
+                  background: "#111",
+                }}
+              >
+                <h3
+                  style={{
+                    color: ACCENT,
+                    fontSize: 15,
+                    fontWeight: 700,
+                    fontFamily: "sans-serif",
+                    margin: "0 0 12px",
+                  }}
+                >
+                  {d.title}
+                </h3>
+                <p
+                  style={{
+                    color: "#94a3b8",
+                    fontSize: 14,
+                    lineHeight: 1.75,
+                    margin: 0,
+                    fontFamily: "sans-serif",
+                  }}
+                >
+                  {d.body}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
-            <p className="text-lg text-pretty max-w-2xl mx-auto leading-relaxed text-slate-400">
-              Interested in discussing AI engineering, machine learning
-              innovations, or potential collaboration opportunities? I&apos;d
-              love to connect and explore how we can build the future together.
-            </p>
+      {/* ── Team ── */}
+      <section style={{ padding: "80px 5vw", background: "#0f0f0f" }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+          <SectionLabel>06 — The Team</SectionLabel>
+          <h2
+            style={{
+              fontSize: "clamp(28px, 4vw, 42px)",
+              fontWeight: 800,
+              lineHeight: 1.2,
+              margin: "0 0 8px",
+              letterSpacing: "-0.02em",
+            }}
+          >
+            Five people, one semester
+          </h2>
+          <Divider />
+          <p
+            style={{
+              color: "#94a3b8",
+              lineHeight: 1.85,
+              fontSize: 16,
+              maxWidth: 640,
+              marginBottom: 36,
+              fontFamily: "sans-serif",
+            }}
+          >
+            ELMO was a capstone project for CS 4485 at UT Dallas, supervised by
+            Professor Sridhar Alagar. Each team member owned a distinct layer of
+            the system, with collaboration happening through weekly sprints,
+            GitHub Projects, and daily Discord syncs.
+          </p>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+              gap: 16,
+            }}
+          >
+            {team.map((t) => (
+              <TeamCard key={t.name} {...t} />
+            ))}
+          </div>
+        </div>
+      </section>
 
-            <div className="flex flex-wrap justify-center gap-6 pt-8">
-              <Button
-                variant="outline"
-                size="lg"
-                className="gap-3 hover:bg-[#FF7E77]/5 backdrop-blur-sm group bg-transparent border-[#FF7E77]/30 text-slate-100"
-                onClick={() =>
-                  window.open(
-                    "https://www.linkedin.com/in/shaswatkumar1/",
-                    "_blank"
-                  )
-                }
+      {/* ── What We Learned ── */}
+      <section style={{ padding: "80px 5vw" }}>
+        <div style={{ maxWidth: 860, margin: "0 auto" }}>
+          <SectionLabel>07 — Takeaways</SectionLabel>
+          <h2
+            style={{
+              fontSize: "clamp(28px, 4vw, 42px)",
+              fontWeight: 800,
+              lineHeight: 1.2,
+              margin: "0 0 8px",
+              letterSpacing: "-0.02em",
+            }}
+          >
+            What building ELMO actually taught us
+          </h2>
+          <Divider />
+          <div style={{ display: "grid", gap: 28, fontFamily: "sans-serif" }}>
+            {[
+              {
+                heading: "Context is everything in LLM prompting",
+                body: "The single biggest improvement to our AI output came not from changing models, but from changing what we fed the model. When we started injecting real, recent articles from Google Search API into each generation call, the quality of output jumped noticeably. Relevance, accuracy, and coherence all improved — because the model had something concrete to synthesize rather than drawing purely from weights trained months ago.",
+              },
+              {
+                heading:
+                  "API documentation is a starting point, not a contract",
+                body: "Between NewsAPI's category limitations, AWS Cognito's evolving Amplify integration, and DeepSeek's behavior drift under certain prompt structures, we learned to treat documentation as a rough guide rather than a specification. The real knowledge came from running the code, reading error messages, and digging through GitHub issues from developers who hit the same walls.",
+              },
+              {
+                heading: "Agile sprints are a forcing function for honesty",
+                body: "Weekly sprint reviews made it hard to hide stalled work or ambiguous progress. Having to articulate what was done — and what wasn't — every seven days created a useful discipline. Tasks that seemed vague got scoped down. Features that seemed essential got deprioritized when the sprint showed we'd overcommitted.",
+              },
+              {
+                heading: "Good UX decisions are often subtractive",
+                body: "We didn't conduct formal user studies, but we did constantly ask ourselves how we'd want to use the app. That question led us to cut several features we'd initially planned — category filters that were too granular, a recommendation engine we didn't have time to tune well — in favor of making the core reading experience fast and clean. The two-state article view (Simplify / Expand) came from this mindset.",
+              },
+            ].map((t) => (
+              <div
+                key={t.heading}
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "3px 1fr",
+                  gap: 24,
+                  alignItems: "start",
+                }}
               >
-                <Linkedin className="h-5 w-5 group-hover:text-[#FF7E77] transition-colors" />
-                LinkedIn
-              </Button>
-              <Button
-                variant="outline"
-                size="lg"
-                className="gap-3 hover:bg-[#FF7E77]/5 backdrop-blur-sm group bg-transparent border-[#FF7E77]/30 text-slate-100"
-                onClick={() =>
-                  window.open("https://github.com/kumarshaswat", "_blank")
-                }
+                <div
+                  style={{
+                    height: "100%",
+                    background: `linear-gradient(${ACCENT}, transparent)`,
+                    borderRadius: 2,
+                    minHeight: 80,
+                  }}
+                />
+                <div>
+                  <h3
+                    style={{
+                      color: "#f1f5f9",
+                      fontSize: 17,
+                      fontWeight: 700,
+                      margin: "0 0 10px",
+                    }}
+                  >
+                    {t.heading}
+                  </h3>
+                  <p
+                    style={{
+                      color: "#94a3b8",
+                      fontSize: 15,
+                      lineHeight: 1.8,
+                      margin: 0,
+                    }}
+                  >
+                    {t.body}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── What's Next ── */}
+      <section style={{ padding: "80px 5vw", background: "#0f0f0f" }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+          <SectionLabel>08 — Future Work</SectionLabel>
+          <h2
+            style={{
+              fontSize: "clamp(28px, 4vw, 42px)",
+              fontWeight: 800,
+              lineHeight: 1.2,
+              margin: "0 0 8px",
+              letterSpacing: "-0.02em",
+            }}
+          >
+            Where ELMO goes next
+          </h2>
+          <Divider />
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+              gap: 16,
+              fontFamily: "sans-serif",
+            }}
+          >
+            {[
+              {
+                area: "Multi-language support",
+                note: "Expand beyond English-only output for global coverage",
+              },
+              {
+                area: "Opinion & bias detection",
+                note: "Surface when an article leans a particular direction, rather than leaving that judgment to the reader alone",
+              },
+              {
+                area: "Audio articles",
+                note: "Text-to-speech so the content is accessible while commuting or exercising",
+              },
+              {
+                area: "Mobile apps",
+                note: "iOS and Android native clients for the core read + explore experience",
+              },
+              {
+                area: "AI model optimization",
+                note: "Containerize with AWS Fargate; fine-tune DeepSeek with real user feedback signals",
+              },
+              {
+                area: "Automated testing",
+                note: "Replace manual Postman runs with a CI pipeline that validates generation quality on each deploy",
+              },
+              {
+                area: "Real-time alerts",
+                note: "EventBridge triggers for breaking news that bypasses the 24-hour daily batch",
+              },
+              {
+                area: "Reading analytics",
+                note: "Help users understand their own information diet: what topics, sources, and perspectives they're actually engaging with",
+              },
+            ].map((f) => (
+              <div
+                key={f.area}
+                style={{
+                  padding: "20px",
+                  border: "1px solid #1e1e1e",
+                  borderRadius: 10,
+                  background: "#111",
+                }}
               >
-                <Github className="h-5 w-5 group-hover:text-[#FF7E77] transition-colors" />
-                GitHub
-              </Button>
-              <Button
-                variant="outline"
-                size="lg"
-                className="gap-3 hover:bg-[#FF7E77]/5 backdrop-blur-sm group bg-transparent border-[#FF7E77]/30 text-slate-100"
-                onClick={() =>
-                  window.open("mailto:shaswat_kr@yahoo.com", "_blank")
-                }
+                <p
+                  style={{
+                    color: "#f1f5f9",
+                    fontWeight: 700,
+                    fontSize: 14,
+                    margin: "0 0 6px",
+                  }}
+                >
+                  {f.area}
+                </p>
+                <p
+                  style={{
+                    color: "#64748b",
+                    fontSize: 13,
+                    lineHeight: 1.6,
+                    margin: 0,
+                  }}
+                >
+                  {f.note}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Contact ── */}
+      <section style={{ padding: "80px 5vw 120px" }}>
+        <div style={{ maxWidth: 560, margin: "0 auto", textAlign: "center" }}>
+          <h2
+            style={{
+              fontSize: "clamp(24px, 3vw, 36px)",
+              fontWeight: 800,
+              margin: "0 0 12px",
+              letterSpacing: "-0.02em",
+            }}
+          >
+            Want to talk about it?
+          </h2>
+          <p
+            style={{
+              color: "#94a3b8",
+              fontSize: 15,
+              lineHeight: 1.7,
+              marginBottom: 36,
+              fontFamily: "sans-serif",
+            }}
+          >
+            Interested in AI engineering, RAG pipelines, or what it's like to
+            ship a real product in a semester? Happy to connect.
+          </p>
+          <div
+            style={{
+              display: "flex",
+              gap: 14,
+              justifyContent: "center",
+              flexWrap: "wrap",
+            }}
+          >
+            {[
+              {
+                label: "LinkedIn",
+                href: "https://www.linkedin.com/in/shaswatkumar1/",
+                icon: <Linkedin size={15} />,
+              },
+              {
+                label: "GitHub",
+                href: "https://github.com/kumarshaswat",
+                icon: <Github size={15} />,
+              },
+              {
+                label: "Email",
+                href: "mailto:shaswat_kr@yahoo.com",
+                icon: <Mail size={15} />,
+              },
+            ].map((l) => (
+              <a
+                key={l.label}
+                href={l.href}
+                target="_blank"
+                rel="noreferrer"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 8,
+                  padding: "12px 22px",
+                  border: `1px solid #2a2a2a`,
+                  borderRadius: 8,
+                  color: "#94a3b8",
+                  fontFamily: "sans-serif",
+                  fontSize: 14,
+                  textDecoration: "none",
+                  background: "#111",
+                  transition: "border-color 0.2s, color 0.2s",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.borderColor = ACCENT;
+                  e.currentTarget.style.color = ACCENT;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.borderColor = "#2a2a2a";
+                  e.currentTarget.style.color = "#94a3b8";
+                }}
               >
-                <Mail className="h-5 w-5 group-hover:text-[#FF7E77] transition-colors" />
-                Email
-              </Button>
-            </div>
+                {l.icon} {l.label}
+              </a>
+            ))}
           </div>
         </div>
       </section>
