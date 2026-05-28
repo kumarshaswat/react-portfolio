@@ -783,11 +783,11 @@ export default function ELMOCaseStudy() {
               marginBottom: 48,
             }}
           >
-            ELMO's architecture is a deliberate layering of three systems: a
-            cloud backend on AWS, a real-time news retrieval layer, and an AI
+            ELMO&apos;s architecture is a deliberate layering of three systems:
+            a cloud backend on AWS, a real-time news retrieval layer, and an AI
             generation pipeline driven by DeepSeek R1:14b. Each layer has a
-            specific job, and they're connected by a custom RAG framework built
-            by the AI Engineer on the team.
+            specific job, and they&apos;re connected by a custom RAG framework
+            built by the AI Engineer on the team.
           </p>
 
           {/* pipeline steps */}
@@ -1348,8 +1348,8 @@ export default function ELMOCaseStudy() {
               fontFamily: "sans-serif",
             }}
           >
-            Interested in AI engineering, RAG pipelines, or what it's like to
-            ship a real product in a semester? Happy to connect.
+            Interested in AI engineering, RAG pipelines, or what it&apos;s like
+            to ship a real product in a semester? Happy to connect.
           </p>
           <div
             style={{

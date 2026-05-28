@@ -867,7 +867,7 @@ export default function BoardScanCaseStudy() {
               }}
             >
               Four sequential stages coordinated by a Flask server running
-              locally on the user's machine. The mobile app transmits the
+              locally on the user&apos;s machine. The mobile app transmits the
               captured image and receives a .excalidraw JSON payload in return.
             </p>
             <PipelineDiagram />
