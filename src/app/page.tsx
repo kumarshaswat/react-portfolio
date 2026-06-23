@@ -64,6 +64,31 @@ export default function Home() {
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 max-w-[60vw] mx-auto">
             <BlurFade delay={10 * 0.1}>
               <ProjectCard
+                title="BoardScan"
+                href="https://github.com/kumarshaswat/BoardScan"
+                description="I built an end-to-end pipeline to solve the 'Analog Data Loss' problem by digitizing whiteboard photos into fully editable vector graphics. The project integrates a React Native mobile app, a Flask backend, an OpenCV extraction pipeline, and a custom YOLOv26-Medium model fine-tuned for real-world whiteboard conditions."
+                dates="January 2026 - June 2026"
+                tags={[
+                  "React Native",
+                  "Python",
+                  "Computer Vision",
+                  "YOLO",
+                  "Flask",
+                ]}
+                link="https://github.com/kumarshaswat/BoardScan"
+                image="/assets/boardscan_mockup.png"
+                links={[
+                  {
+                    icon: <Github size={16} />,
+                    type: "GitHub",
+                    href: "https://github.com/kumarshaswat/BoardScan",
+                  },
+                ]}
+                className="my-custom-class"
+              />
+            </BlurFade>
+            <BlurFade delay={10 * 0.1}>
+              <ProjectCard
                 title="ELMO - Capstone Project"
                 href="/elmo"
                 description="ELMO is an AI platform that streamlines news consumption by delivering concise, customizable summaries from multiple sources. I deployed and fine-tuned a local DeepSeek model to power this analysis, utilizing advanced prompt engineering for optimal text summarization."
