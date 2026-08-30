@@ -48,7 +48,7 @@ export default function Home() {
                   <br />
                   <Image
                     src="/assets/baby.jpg"
-                    alt="Baby photo"
+                    alt="Baby photo of me"
                     width={250}
                     height={250}
                   />
@@ -77,6 +77,27 @@ export default function Home() {
                   <br />
                   <Image
                     src="/assets/my_pic.jpg"
+                    alt="Young photo of me"
+                    width={400}
+                    height={400}
+                  />
+                </>
+              ),
+            },
+            {
+              title: "2021",
+              content: (
+                <>
+                  <p className="text-xl">
+                    I graduated high school and started my undergraduate journey
+                    at The University of Texas at Dallas, majoring in Computer
+                    Science. Over the next few years, I dove into coursework,
+                    personal projects, and problem-solving, eventually
+                    completing my Bachelor&apos;s degree in Computer Science.
+                  </p>
+                  <br />
+                  <Image
+                    src="/assets/utd-grad.png"
                     alt="Baby photo"
                     width={400}
                     height={400}
@@ -85,46 +106,57 @@ export default function Home() {
               ),
             },
             {
-              title: "2020",
+              title: "2022",
               content: (
                 <>
                   <p className="text-xl">
-                    I graduated high school and started college. I went to UT
-                    Dallas and majored in computer science.
+                    Around this time, I was deep into my undergrad experience at
+                    UT Dallas. In my free time, I enjoyed working on personal
+                    projects that let me exercise my creativity and
+                    problem-solving skills. I&apos;m a big believer in teamwork
+                    and was fortunate to work with some amazing people on
+                    various projects.
+                    <br /> <br />I was also involved in a couple of student
+                    organizations on campus. I served as the media officer for
+                    the Association for Computing Machinery, where I created
+                    engaging content to showcase the work of ACM and highlight
+                    key industry trends and innovations. I was also a web
+                    developer for the User Experience Club, where I worked with
+                    a team of designers and event coordinators to develop and
+                    maintain a responsive web application.
                   </p>
+                  <br />
+                  <Image
+                    src="/assets/me-pres.jpg"
+                    alt="Baby photo"
+                    width={400}
+                    height={400}
+                  />
                 </>
               ),
             },
             {
-              title: "2024",
+              title: "2025",
               content: (
                 <>
                   <p className="text-xl">
-                    Finally, I&apos;m currently a student at The University of
-                    Texas at Dallas pursuing a Bachelor&apos;s degree in
-                    Computer Science. In my free time, I enjoy working on
-                    personal projects that allow me to exercise my creativity
-                    and problem-solving skills. I&apos;m a big believer in
-                    teamwork and have been fortunate to work with some amazing
-                    people on various projects in the past.
+                    I started my Master&apos;s of Science in Computer Science at
+                    The University of Texas at Dallas, and I&apos;m currently
+                    pursuing it. I&apos;m always looking for new opportunities
+                    to grow and learn, whether that&apos;s through my
+                    coursework, personal projects, or new collaborations.
                     <br /> <br />
-                    Aside from my academic and technical pursuits, I&apos;m also
-                    involved in a couple of student organizations on campus. I
-                    serve as the media officer for the Association for Computing
-                    Machinery, where I create engaging content to showcase the
-                    work of ACM and highlight key industry trends and
-                    innovations. I&apos;m also a web developer for the User
-                    Experience Club, where I work with a team of designers and
-                    event coordinators to develop and maintain a responsive web
-                    application.
-                    <br /> <br />
-                    Overall, I&apos;m always looking for new opportunities to
-                    grow and learn, whether that&apos;s through my coursework,
-                    personal projects, or involvement in various organizations.
                     Feel free to connect with me on LinkedIn or check out my
                     other socials to learn more about my experiences and
                     interests.
                   </p>
+                  <br />
+                  <Image
+                    src="/assets/utd-campus.png"
+                    alt="Baby photo"
+                    width={400}
+                    height={400}
+                  />
                 </>
               ),
             },

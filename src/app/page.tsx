@@ -85,6 +85,8 @@ export default function Home() {
                   },
                 ]}
                 className="my-custom-class"
+                target="_blank"
+                rel="noopener noreferrer"
               />
             </BlurFade>
             <BlurFade delay={10 * 0.1}>
@@ -111,7 +113,7 @@ export default function Home() {
                 title="The UX Website"
                 href="https://uxutd.com/"
                 description="This is my case study on how I acted as PM for the design and development of the new UX website. I assisted in creating the UI/UX and I worked with a team to develop the website and bring it to life."
-                dates="August 2024 - Present"
+                dates="September 2024 - December 2024"
                 tags={["JavaScript", "React", "Next.js"]}
                 link="https://example.com/project"
                 image="/assets/ux_website.png"
@@ -128,14 +130,16 @@ export default function Home() {
                   },
                 ]}
                 className="my-custom-class"
+                target="_blank"
+                rel="noopener noreferrer"
               />
             </BlurFade>
             <BlurFade delay={11 * 0.1}>
               <ProjectCard
                 title="The ACM Website"
-                href="/ACM-website"
+                href="https://acmutd.co/"
                 description="Acted as the sole front-end developer over a 2-3 month summer period to completely refresh the ACM website. Designed and built the new landing page, about page, and all necessary core pages to modernize the organization's digital presence."
-                dates="Summer Project"
+                dates="Summer 2024"
                 tags={["JavaScript", "React", "Next.js"]}
                 image="/assets/acm_website.png"
                 links={[
@@ -151,6 +155,34 @@ export default function Home() {
                   },
                 ]}
                 className="my-custom-class"
+                target="_blank"
+                rel="noopener noreferrer"
+              />
+            </BlurFade>
+            <BlurFade delay={13 * 0.1}>
+              <ProjectCard
+                title="Sociate"
+                href="https://www.figma.com/design/RXnhf5yWDDQ7MydwndY1FG/UCI-Designathon-(Sociate)?node-id=0-1&t=uHGs9E88A4CRU7Xo-1"
+                description="This is a case study of how I mastered my craft in User Research and UI/UX design. I worked with a team of 5 developers to create a social media platform that connects people with similar interests."
+                dates="August 2023"
+                tags={["JavaScript", "React", "Next.js"]}
+                link="https://example.com/project"
+                image="/assets/sociate_mockup.png"
+                links={[
+                  {
+                    icon: <Figma size={16} />, // You can replace this with an actual icon component
+                    type: "Figma",
+                    href: "https://www.figma.com/design/RXnhf5yWDDQ7MydwndY1FG/UCI-Designathon-(Sociate)?node-id=0-1&t=uHGs9E88A4CRU7Xo-1",
+                  },
+                  {
+                    icon: <span>📄</span>, // Replace with an actual icon component
+                    type: "Research",
+                    href: "https://www.figma.com/design/RXnhf5yWDDQ7MydwndY1FG/UCI-Designathon-(Sociate)?node-id=57-3&t=uHGs9E88A4CRU7Xo-1",
+                  },
+                ]}
+                className="my-custom-class"
+                target="_blank"
+                rel="noopener noreferrer"
               />
             </BlurFade>
             <BlurFade delay={12 * 0.1}>
@@ -177,36 +209,12 @@ export default function Home() {
                 className="my-custom-class"
               />
             </BlurFade>
-            <BlurFade delay={13 * 0.1}>
-              <ProjectCard
-                title="Sociate"
-                href="https://www.figma.com/design/RXnhf5yWDDQ7MydwndY1FG/UCI-Designathon-(Sociate)?node-id=0-1&t=uHGs9E88A4CRU7Xo-1"
-                description="This is a case study of how I mastered my craft in User Research and UI/UX design. I worked with a team of 5 developers to create a social media platform that connects people with similar interests."
-                dates="August 2024 - Present"
-                tags={["JavaScript", "React", "Next.js"]}
-                link="https://example.com/project"
-                image="/assets/sociate_mockup.png"
-                links={[
-                  {
-                    icon: <Figma size={16} />, // You can replace this with an actual icon component
-                    type: "Figma",
-                    href: "https://www.figma.com/design/RXnhf5yWDDQ7MydwndY1FG/UCI-Designathon-(Sociate)?node-id=0-1&t=uHGs9E88A4CRU7Xo-1",
-                  },
-                  {
-                    icon: <span>📄</span>, // Replace with an actual icon component
-                    type: "Research",
-                    href: "https://www.figma.com/design/RXnhf5yWDDQ7MydwndY1FG/UCI-Designathon-(Sociate)?node-id=57-3&t=uHGs9E88A4CRU7Xo-1",
-                  },
-                ]}
-                className="my-custom-class"
-              />
-            </BlurFade>
             <BlurFade delay={14 * 0.1}>
               <ProjectCard
                 title="Shop & Share"
                 href="https://www.figma.com/design/6xRaV6rfhLhvA5NgHsZ4Es/Shop%26Share-Logo-Ideas?node-id=27-49&t=OYyXUF6daKQR5cJW-1"
                 description="This is a case study on my first ever projects that ignited the flame of love for front-end and back-end tools. Four other developers and I participated in a highly competitive development program to make a collaborative shopping list app."
-                dates="August 2024 - Present"
+                dates="August 2022 - December 2022"
                 tags={["JavaScript", "React", "Next.js"]}
                 link="https://example.com/project"
                 image="/assets/shopandshare_mockup.png"
@@ -223,6 +231,8 @@ export default function Home() {
                   },
                 ]}
                 className="my-custom-class"
+                target="_blank"
+                rel="noopener noreferrer"
               />
             </BlurFade>
           </div>{" "}

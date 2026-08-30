@@ -26,6 +26,8 @@ interface Props {
     href: string;
   }[];
   className?: string;
+  target?: string;
+  rel?: string;
 }
 
 export default function ProjectCard({
@@ -39,6 +41,8 @@ export default function ProjectCard({
   video,
   links,
   className,
+  target,
+  rel,
 }: Props) {
   return (
     <Card
@@ -49,6 +53,8 @@ export default function ProjectCard({
       <Link
         href={href || "#"}
         className={cn("block cursor-pointer", className)}
+        target={target}
+        rel={rel}
       >
         {video && (
           <video
