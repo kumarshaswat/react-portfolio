@@ -26,13 +26,15 @@ export default function Home() {
             <FlipWords
               className="text-7xl font-bold text-[#0a0a0a] dark:text-[#f8fafc] pl-[11rem]"
               words={[
-                "Web Developer.",
-                "UX Designer.",
-                "CS Student.",
                 "Full-Stack Developer.",
+                "Front-End Developer.",
+                "AI Engineer.",
+                "Web Developer.",
+                "CS Student.",
+                "UX Designer.",
+                "Problem Solver.",
                 "Tech Enthusiast.",
                 "Team Leader.",
-                "Problem Solver.",
                 "Contributor.",
                 "Creative Coder.",
                 "Learner.",
@@ -65,7 +67,7 @@ export default function Home() {
             <BlurFade delay={10 * 0.1}>
               <ProjectCard
                 title="BoardScan"
-                href="https://github.com/kumarshaswat/BoardScan"
+                href="/boardscan"
                 description="I built an end-to-end pipeline to solve the 'Analog Data Loss' problem by digitizing whiteboard photos into fully editable vector graphics. The project integrates a React Native mobile app, a Flask backend, an OpenCV extraction pipeline, and a custom YOLOv26-Medium model fine-tuned for real-world whiteboard conditions."
                 dates="January 2026 - June 2026"
                 tags={[

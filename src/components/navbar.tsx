@@ -1,6 +1,12 @@
 import React from "react";
 import Link from "next/link";
-import { CalendarIcon, HomeIcon, MailIcon, PencilIcon, File } from "lucide-react";
+import {
+  CalendarIcon,
+  HomeIcon,
+  MailIcon,
+  PencilIcon,
+  File,
+} from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
@@ -61,7 +67,20 @@ const Icons = {
   ),
 };
 
-const DATA = {
+type SocialLink = {
+  name: string;
+  url: string;
+  icon: (props: IconProps) => React.ReactElement;
+  target?: string;
+  rel?: string;
+};
+
+const DATA: {
+  navbar: { href: string; icon: typeof HomeIcon; label: string }[];
+  contact: {
+    social: Record<string, SocialLink>;
+  };
+} = {
   navbar: [
     { href: "/", icon: HomeIcon, label: "Home" },
     { href: "/about-me", icon: PencilIcon, label: "About Me" },
@@ -78,15 +97,17 @@ const DATA = {
         url: "https://www.linkedin.com/in/shaswatkumar1/",
         icon: Icons.linkedin,
       },
-      email: {
+      Email: {
         name: "Send Email",
         url: "mailto:shaswat_kr@yahoo.com",
         icon: Icons.email,
       },
       Resume: {
-        name: "X",
-        url: "https://drive.google.com/file/d/1PpqkC8EWFY3LhiuxmMg1KE9OiXgIOICn/view?usp=sharing",
+        name: "Resume",
+        url: "https://drive.google.com/file/d/1tWGevO8EvLsHI8S4U2Y-R3x2QDxIhFVV/view?usp=sharing",
         icon: Icons.resume,
+        target: "_blank",
+        rel: "noreferrer",
       },
     },
   },
@@ -97,7 +118,10 @@ export default function Navbar() {
     <div className="fixed inset-x-0 top-0 z-30 mx-auto mb-4 flex origin-bottom h-full max-h-14">
       <div className="fixed top-0 inset-x-0 h-16 w-full bg-background to-transparent backdrop-blur-lg [-webkit-mask-image:linear-gradient(to_bottom,black,transparent)] dark:bg-background"></div>
       <TooltipProvider>
-        <Dock className="z-50 pointer-events-auto relative mx-auto flex min-h-full h-full items-center px-1 bg-background [box-shadow:0_0_0_1px_rgba(0,0,0,.03),0_2px_4px_rgba(0,0,0,.05),0_12px_24px_rgba(0,0,0,.05)] transform-gpu dark:[border:1px_solid_rgba(255,255,255,.1)] dark:[box-shadow:0_-20px_80px_-20px_#ffffff1f_inset] " direction="middle">
+        <Dock
+          className="z-50 pointer-events-auto relative mx-auto flex min-h-full h-full items-center px-1 bg-background [box-shadow:0_0_0_1px_rgba(0,0,0,.03),0_2px_4px_rgba(0,0,0,.05),0_12px_24px_rgba(0,0,0,.05)] transform-gpu dark:[border:1px_solid_rgba(255,255,255,.1)] dark:[box-shadow:0_-20px_80px_-20px_#ffffff1f_inset] "
+          direction="middle"
+        >
           {DATA.navbar.map((item) => (
             <DockIcon key={item.label}>
               <Tooltip>
@@ -125,6 +149,8 @@ export default function Navbar() {
                 <TooltipTrigger asChild>
                   <Link
                     href={social.url}
+                    target={social.target}
+                    rel={social.rel}
                     className={cn(
                       buttonVariants({ variant: "ghost", size: "icon" }),
                       "size-12 rounded-full",
@@ -152,6 +178,6 @@ export default function Navbar() {
           </DockIcon>
         </Dock>
       </TooltipProvider>
-      </div>
+    </div>
   );
 }
