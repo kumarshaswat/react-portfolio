@@ -26,12 +26,14 @@ export default function Home() {
             <FlipWords
               className="text-7xl font-bold text-[#0a0a0a] dark:text-[#f8fafc] pl-[11rem]"
               words={[
-                "Full-Stack Developer.",
-                "Front-End Developer.",
                 "AI Engineer.",
+                "ML Engineer.",
+                "Software Developer.",
+                "Front-End Developer.",
                 "Web Developer.",
-                "CS Student.",
+                "CS Graduate Student.",
                 "UX Designer.",
+                "Hackathon Winner.",
                 "Problem Solver.",
                 "Tech Enthusiast.",
                 "Team Leader.",
