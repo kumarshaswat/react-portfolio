@@ -89,8 +89,6 @@ export default function Home() {
                   },
                 ]}
                 className="my-custom-class"
-                target="_blank"
-                rel="noopener noreferrer"
               />
             </BlurFade>
             <BlurFade delay={10 * 0.1}>
