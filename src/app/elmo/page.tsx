@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 import {
   Github,
@@ -9,6 +10,7 @@ import {
   ChevronDown,
   ChevronUp,
   ArrowRight,
+  ArrowLeft,
 } from "lucide-react";
 
 const ACCENT = "#FF7E77";
@@ -511,6 +513,21 @@ export default function ELMOCaseStudy() {
         >
           {/* Left: text */}
           <div>
+            <Link
+              href="/#projects"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 8,
+                color: "#94a3b8",
+                fontSize: 14,
+                textDecoration: "none",
+                marginBottom: 32,
+              }}
+            >
+              <ArrowLeft size={15} /> Back to projects
+            </Link>
+
             <div
               style={{
                 display: "flex",

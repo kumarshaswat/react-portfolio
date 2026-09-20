@@ -14,35 +14,51 @@ const BLUR_FADE_DELAY = 0.04;
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col h-full w-full">
-      <section className="items-left pt-[20vh] pl-[20vw] h-max pb-[10vh]">
+    <main className="flex min-h-screen flex-col h-full w-full px-6">
+      <section className="items-left pt-[15vh] pb-[10vh] sm:pl-[8vw] lg:pl-[16vw]">
         <BlurFade>
-          <h1 className="text-7xl font-bold"> Hello, I&apos;m</h1>
-          <h1 className="text-7xl font-bold text-[#7374be] dark:text-[#9394f1]">
+          <h1 className="text-[clamp(1.5rem,8.2vw,4.5rem)] font-bold leading-tight">
+            {" "}
+            Hello, I&apos;m
+          </h1>
+          <h1 className="text-[clamp(1.5rem,8.2vw,4.5rem)] font-bold leading-tight text-[#7374be] dark:text-[#9394f1]">
             Shaswat Kumar.
           </h1>
-          <div className="flex">
-            <h1 className="text-7xl font-bold">I&apos;m a</h1>
-            <FlipWords
-              className="text-7xl font-bold text-[#0a0a0a] dark:text-[#f8fafc] pl-[11rem]"
-              words={[
-                "AI Engineer.",
-                "ML Engineer.",
-                "Software Developer.",
-                "Front-End Developer.",
-                "Web Developer.",
-                "CS Graduate Student.",
-                "UX Designer.",
-                "Hackathon Winner.",
-                "Problem Solver.",
-                "Tech Enthusiast.",
-                "Team Leader.",
-                "Contributor.",
-                "Creative Coder.",
-                "Learner.",
-                "Mentor.",
-              ]}
-            />
+          <div className="flex flex-wrap items-baseline gap-x-4">
+            <h1 className="text-[clamp(1.5rem,8.2vw,4.5rem)] font-bold leading-tight">
+              I&apos;m a
+            </h1>
+            {/* invisible copy of the longest word reserves the space the
+                absolutely positioned flip text needs, so it can't overlap the
+                heading next to it */}
+            <div className="relative">
+              <span
+                aria-hidden
+                className="invisible block whitespace-nowrap text-[clamp(1.5rem,8.2vw,4.5rem)] font-bold leading-tight"
+              >
+                Front-End Developer.
+              </span>
+              <FlipWords
+                className="absolute left-0 top-0 whitespace-nowrap px-0 text-[clamp(1.5rem,8.2vw,4.5rem)] font-bold leading-tight text-[#0a0a0a] dark:text-[#f8fafc]"
+                words={[
+                  "AI Engineer.",
+                  "ML Engineer.",
+                  "Software Developer.",
+                  "Front-End Developer.",
+                  "Web Developer.",
+                  "CS Graduate Student.",
+                  "UX Designer.",
+                  "Hackathon Winner.",
+                  "Problem Solver.",
+                  "Tech Enthusiast.",
+                  "Team Leader.",
+                  "Contributor.",
+                  "Creative Coder.",
+                  "Learner.",
+                  "Mentor.",
+                ]}
+              />
+            </div>
           </div>
         </BlurFade>
       </section>
@@ -57,7 +73,7 @@ export default function Home() {
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
                   Check out my latest work
                 </h2>
-                <p className="text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                <p className="mx-auto max-w-2xl text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
                   I&apos;ve worked on a variety of projects, from simple
                   websites to complex web applications. Here are a few of my
                   favorites.
@@ -65,7 +81,7 @@ export default function Home() {
               </div>
             </div>
           </BlurFade>
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 max-w-[60vw] mx-auto">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 w-full max-w-2xl sm:max-w-[60vw] mx-auto">
             <BlurFade delay={10 * 0.1}>
               <ProjectCard
                 title="BoardScan"
@@ -89,6 +105,25 @@ export default function Home() {
                   },
                 ]}
                 className="my-custom-class"
+              />
+            </BlurFade>
+            <BlurFade delay={10 * 0.1}>
+              <ProjectCard
+                title="earnify"
+                href="/earnify"
+                description="A case study on redesigning BP's earnify loyalty app to convert fuel-only customers into convenience store shoppers. As Project Manager, I led a team of 5 through user research, wireframing, and prototyping across 7,000 BP locations serving 1.5 million users."
+                dates="January 2025 - May 2025"
+                tags={["Figma", "UX Research", "Product Management"]}
+                link="https://app.notion.com/p/earnify-Case-Study-1ed60ea1075c806da979c5060b8d55e8?source=copy_link"
+                image="/assets/earnify/Hero.png"
+                links={[
+                  {
+                    icon: <Figma size={16} />,
+                    type: "Prototype",
+                    href: "https://embed.figma.com/design/YHnlGiKLJG3erEDxmnQNEG/BP?node-id=1-2&t=nsecepKY7Akbt0QK-1&embed-host=notion&footer=false&theme=system",
+                  },
+                ]}
+                className="bg-[#0B1A17]"
               />
             </BlurFade>
             <BlurFade delay={10 * 0.1}>
@@ -239,43 +274,73 @@ export default function Home() {
             </BlurFade>
           </div>{" "}
           <section id="Work">
-            <div className="space-y-12 w-full py-12 mx-auto max-w-[60vw]">
+            <div className="space-y-12 w-full py-12">
               <BlurFade delay={BLUR_FADE_DELAY * 13}>
                 <div className="flex flex-col items-center justify-center space-y-4 text-center">
                   <div className="space-y-2">
                     <div className="inline-block rounded-lg bg-foreground text-background px-3 py-1 text-sm">
                       Work Experience
                     </div>
-                    <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
-                      I like building things
-                    </h2>
-                    <p className="text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                      During my time in university, I joined a bunch of
-                      organizations and gained valuable experience working on
-                      real-world projects. Here are some of the highlights of my
-                      work experience.
+                    {/* heading and flip line share one size and sit in their
+                        own block so the section's space-y-2 doesn't push them
+                        apart */}
+                    <div>
+                      <h2 className="text-[clamp(1rem,4.4vw,3.25rem)] font-bold leading-tight tracking-tighter">
+                        I learned the most from
+                      </h2>
+                      <div className="relative">
+                        <span
+                          aria-hidden
+                          className="invisible block whitespace-nowrap text-center text-[clamp(1rem,4.4vw,3.25rem)] font-bold leading-tight tracking-tighter"
+                        >
+                          the side projects I said yes to too fast.
+                        </span>
+                        <FlipWords
+                          className="absolute inset-x-0 top-0 whitespace-nowrap pl-[0.1em] pr-0 text-center text-[clamp(1rem,4.4vw,3.25rem)] font-bold leading-tight tracking-tighter text-[#7374be] dark:text-[#9394f1]"
+                          words={[
+                            "the work that actually shipped.",
+                            "the projects nobody else wanted to do.",
+                            "the things that had my name on them.",
+                            "the deadlines I couldn't move.",
+                            "everything I built outside of class.",
+                            "the side projects I said yes to too fast.",
+                            "the apps people actually used.",
+                            "the roles I volunteered for.",
+                            "the bugs that showed up in public.",
+                            "the teams I had to explain myself to.",
+                            "the late nights before a launch.",
+                            "the projects that were never just design.",
+                          ]}
+                        />
+                      </div>
+                    </div>
+                    <p className="mx-auto max-w-xl text-sm text-muted-foreground sm:text-base md:text-lg/relaxed">
+                      Real deadlines, real people using it, and no one to hand
+                      it off to.
                     </p>
                   </div>
                 </div>
               </BlurFade>
               <BlurFade delay={BLUR_FADE_DELAY * 14}>
-                <ul className="mb-4 ml-4 divide-y divide-dashed border-l">
-                  {DATA.hackathons.map((project, id) => (
-                    <BlurFade
-                      key={project.title + project.dates}
-                      delay={BLUR_FADE_DELAY * 15 + id * 0.05}
-                    >
-                      <HackathonCard
-                        title={project.title}
-                        description={project.description}
-                        location={project.location}
-                        dates={project.dates}
-                        image={project.image}
-                        links={project.links}
-                      />
-                    </BlurFade>
-                  ))}
-                </ul>
+                <div className="mx-auto max-w-2xl sm:max-w-[60vw]">
+                  <ul className="mb-4 ml-4 divide-y divide-dashed border-l">
+                    {DATA.hackathons.map((project, id) => (
+                      <BlurFade
+                        key={project.title + project.dates}
+                        delay={BLUR_FADE_DELAY * 15 + id * 0.05}
+                      >
+                        <HackathonCard
+                          title={project.title}
+                          description={project.description}
+                          location={project.location}
+                          dates={project.dates}
+                          image={project.image}
+                          links={project.links}
+                        />
+                      </BlurFade>
+                    ))}
+                  </ul>
+                </div>
               </BlurFade>
             </div>
           </section>
