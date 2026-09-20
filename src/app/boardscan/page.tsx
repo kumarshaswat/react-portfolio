@@ -1,3 +1,5 @@
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 import { GlyphMatrix } from "@/components/magicui/glyph-matrix";
 import { AuroraText } from "@/components/magicui/aurora-text";
 
@@ -18,6 +20,13 @@ export default function BoardScanCaseStudy() {
       </div>
 
       {/* Content */}
+      <Link
+        href="/#projects"
+        className="absolute left-6 top-20 z-40 inline-flex items-center gap-2 text-sm text-white/60 transition hover:text-white sm:top-24"
+      >
+        <ArrowLeft size={15} /> Back to projects
+      </Link>
+
       <div className="relative z-10 mx-auto flex min-h-screen max-w-4xl flex-col items-center justify-center px-6 text-center">
         <span className="mb-6 rounded-full border border-white/15 bg-white/5 px-4 py-1 text-xs font-medium uppercase tracking-widest text-white/60">
           Case Study
