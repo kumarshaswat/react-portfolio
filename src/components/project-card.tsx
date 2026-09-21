@@ -26,6 +26,9 @@ interface Props {
     href: string;
   }[];
   className?: string;
+  /** extra classes on the media itself, e.g. "object-center" to change which
+      part of a tall image the card crops to */
+  imageClassName?: string;
   target?: string;
   rel?: string;
 }
@@ -41,21 +44,17 @@ export default function ProjectCard({
   video,
   links,
   className,
+  imageClassName,
   target,
   rel,
 }: Props) {
   return (
     <Card
       className={
-        "flex flex-col overflow-hidden border hover:shadow-lg transition-all duration-300 ease-out h-full"
+        "group relative flex h-full flex-col overflow-hidden border transition-all duration-300 ease-out hover:border-[#7374be]/60 hover:shadow-lg dark:hover:border-[#9394f1]/60 motion-safe:hover:-translate-y-1"
       }
     >
-      <Link
-        href={href || "#"}
-        className={cn("block cursor-pointer", className)}
-        target={target}
-        rel={rel}
-      >
+      <div className={cn("block", className)}>
         {video && (
           <video
             src={video}
@@ -63,7 +62,7 @@ export default function ProjectCard({
             loop
             muted
             playsInline
-            className="pointer-events-none mx-auto h-40 w-full object-cover object-top" // needed because random black line at bottom of video
+            className="pointer-events-none mx-auto h-40 w-full object-cover object-top transition-transform duration-500 ease-out motion-safe:group-hover:scale-[1.04]" // needed because random black line at bottom of video
           />
         )}
         {image && (
@@ -72,10 +71,22 @@ export default function ProjectCard({
             alt={title}
             width={500}
             height={300}
-            className="h-40 w-full overflow-hidden object-cover object-top"
+            className={cn(
+              "h-40 w-full overflow-hidden object-cover object-top transition-transform duration-500 ease-out motion-safe:group-hover:scale-[1.04]",
+              imageClassName,
+            )}
           />
         )}
-      </Link>
+      </div>
+      {/* covers the whole card so anywhere but the footer links opens the
+          project; the footer badges sit above it */}
+      <Link
+        href={href || "#"}
+        aria-label={title}
+        className="absolute inset-0 z-10 cursor-pointer"
+        target={target}
+        rel={rel}
+      />
       <CardHeader className="px-2">
         <div className="space-y-1">
           <CardTitle className="mt-1 text-base">{title}</CardTitle>
@@ -105,7 +116,7 @@ export default function ProjectCard({
       </CardContent>
       <CardFooter className="px-2 pb-2">
         {links && links.length > 0 && (
-          <div className="flex flex-row flex-wrap items-start gap-1">
+          <div className="relative z-20 flex flex-row flex-wrap items-start gap-1">
             {links?.map((link, idx) => (
               <Link href={link?.href} key={idx} target="_blank">
                 <Badge key={idx} className="flex gap-2 px-2 py-1 text-[10px]">

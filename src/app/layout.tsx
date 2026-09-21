@@ -37,7 +37,7 @@ export default function RootLayout({
             )}
           />
         </div>
-        <ThemeProvider attribute="class" defaultTheme="dark">
+        <ThemeProvider attribute="class" forcedTheme="dark">
           <TooltipProvider delayDuration={0}>
             {children}
             <Navbar />

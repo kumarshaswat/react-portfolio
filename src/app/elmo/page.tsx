@@ -6,6 +6,7 @@ import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { DM_Serif_Display, Work_Sans } from "next/font/google";
 import { Badge } from "@/components/ui/badge";
+import { ScrollProgress } from "@/components/ui/scroll-progress";
 import {
   Github,
   Linkedin,
@@ -501,6 +502,7 @@ export default function ELMOCaseStudy() {
       className={body.className}
       style={{ background: BG, color: TEXT, minHeight: "100vh" }}
     >
+      <ScrollProgress className="bg-[#FF7E77]" />
       <style>{`
         /* back links: muted until hover, when the text lifts to white and the
            accent underline wipes in from the left */

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Space_Grotesk, Work_Sans } from "next/font/google";
 import { ArrowLeft, ArrowUpRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { ScrollProgress } from "@/components/ui/scroll-progress";
 import { EarnifyPhoneColumns } from "@/components/earnify-phone-columns";
 
 const display = Space_Grotesk({
@@ -232,6 +233,7 @@ export default function EarnifyCaseStudy() {
       className={body.className}
       style={{ background: BG, color: TEXT, minHeight: "100vh" }}
     >
+      <ScrollProgress className="bg-[#FFB238]" />
       <style>{`
         /* both back links share one wiping underline: the top one wipes in on
            hover, the closing one wipes out */
