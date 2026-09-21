@@ -6,10 +6,14 @@ import { cn } from "@/lib/utils";
 export const FlipWords = ({
   words,
   duration = 3000,
+  // seconds between each letter fading in; long phrases want a smaller value
+  // or the last letter lands seconds after the first
+  letterDelay = 0.08,
   className,
 }: {
   words: string[];
   duration?: number;
+  letterDelay?: number;
   className?: string;
 }) => {
   const [currentWord, setCurrentWord] = useState(words[0]);
@@ -73,7 +77,7 @@ export const FlipWords = ({
               initial={{ opacity: 0, y: 10, filter: "blur(8px)" }}
               animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
               transition={{
-                delay: index * 0.08,
+                delay: index * letterDelay,
                 duration: 0.4,
               }}
               className="inline-block"

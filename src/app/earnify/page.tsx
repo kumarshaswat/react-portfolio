@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Space_Grotesk, Work_Sans } from "next/font/google";
 import { ArrowLeft, ArrowUpRight } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { EarnifyPhoneColumns } from "@/components/earnify-phone-columns";
 
 const display = Space_Grotesk({
@@ -51,37 +52,26 @@ const Meta = ({ label, value }: { label: string; value: React.ReactNode }) => (
   </div>
 );
 
-const Divider = () => (
-  <div
-    style={{
-      width: 44,
-      height: 3,
-      background: AMBER,
-      borderRadius: 2,
-      margin: "14px 0 22px",
-    }}
-  />
-);
-
 const SectionHeading = ({
+  num,
   kicker,
   title,
 }: {
+  num: string;
   kicker: string;
   title: string;
 }) => (
-  <div style={{ marginBottom: 32 }}>
-    <p
-      style={{
-        color: GREEN,
-        fontSize: 14,
-        margin: "0 0 6px",
-        fontFamily: body.style.fontFamily,
-        fontWeight: 600,
-      }}
+  <div style={{ marginBottom: 28 }}>
+    <Badge
+      variant="outline"
+      className="mb-4 gap-2 border-[#2FA84F40] bg-[#2FA84F14] px-3 py-1 text-[12.5px] font-medium tracking-wide text-[#2FA84F]"
     >
+      <span className={display.className} style={{ opacity: 0.75 }}>
+        {num}
+      </span>
+      <span style={{ width: 1, height: 12, background: "#2FA84F40" }} />
       {kicker}
-    </p>
+    </Badge>
     <h2
       className={display.className}
       style={{
@@ -90,11 +80,11 @@ const SectionHeading = ({
         margin: 0,
         color: TEXT,
         letterSpacing: "-0.01em",
+        lineHeight: 1.15,
       }}
     >
       {title}
     </h2>
-    <Divider />
   </div>
 );
 
@@ -242,6 +232,40 @@ export default function EarnifyCaseStudy() {
       className={body.className}
       style={{ background: BG, color: TEXT, minHeight: "100vh" }}
     >
+      <style>{`
+        /* both back links share one wiping underline: the top one wipes in on
+           hover, the closing one wipes out */
+        .earnify-back {
+          position: relative;
+          transition: color 0.25s ease;
+        }
+        .earnify-back::after {
+          content: "";
+          position: absolute;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          height: 2px;
+          background: ${AMBER};
+          transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .earnify-back--in {
+          color: ${MUTED};
+        }
+        .earnify-back--in::after {
+          transform: scaleX(0);
+          transform-origin: left;
+        }
+        .earnify-back--in:hover {
+          color: ${TEXT};
+        }
+        .earnify-back--in:hover::after {
+          transform: scaleX(1);
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .earnify-back::after { transition: none; }
+        }
+      `}</style>
       {/* ── Hero ── */}
       <section
         style={{
@@ -292,11 +316,12 @@ export default function EarnifyCaseStudy() {
                 display: "inline-flex",
                 alignItems: "center",
                 gap: 8,
-                color: MUTED,
                 fontSize: 14,
                 textDecoration: "none",
                 marginBottom: 40,
+                paddingBottom: 4,
               }}
+              className="earnify-back earnify-back--in"
             >
               <ArrowLeft size={15} /> Back to projects
             </Link>
@@ -401,6 +426,7 @@ export default function EarnifyCaseStudy() {
           >
             <div>
               <SectionHeading
+                num="01"
                 kicker="Overview"
                 title="From fuel app to loyalty ecosystem"
               />
@@ -446,6 +472,7 @@ export default function EarnifyCaseStudy() {
       <section style={{ padding: "0 6vw 90px" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto" }}>
           <SectionHeading
+            num="02"
             kicker="Problem"
             title="Fuel customers aren't becoming shoppers"
           />
@@ -502,6 +529,7 @@ export default function EarnifyCaseStudy() {
       <section style={{ padding: "0 6vw 90px", background: PANEL_ALT }}>
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "90px 0" }}>
           <SectionHeading
+            num="03"
             kicker="Solution"
             title="Bridging the pump and the shelf"
           />
@@ -563,6 +591,7 @@ export default function EarnifyCaseStudy() {
       <section style={{ padding: "90px 6vw" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto" }}>
           <SectionHeading
+            num="04"
             kicker="Process"
             title="Understanding the forecourt customer"
           />
@@ -842,7 +871,11 @@ export default function EarnifyCaseStudy() {
       {/* ── Wireframes ── */}
       <section style={{ padding: "90px 6vw", background: PANEL_ALT }}>
         <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-          <SectionHeading kicker="Wireframes" title="From flow to interface" />
+          <SectionHeading
+            num="05"
+            kicker="Wireframes"
+            title="From flow to interface"
+          />
           <p
             style={{
               color: MUTED,
@@ -895,6 +928,7 @@ export default function EarnifyCaseStudy() {
       <section style={{ padding: "90px 6vw" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto" }}>
           <SectionHeading
+            num="06"
             kicker="Final Design"
             title="Play with the prototype"
           />
@@ -941,7 +975,11 @@ export default function EarnifyCaseStudy() {
       {/* ── Future Improvements ── */}
       <section style={{ padding: "90px 6vw", background: PANEL_ALT }}>
         <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-          <SectionHeading kicker="What's Next" title="Future improvements" />
+          <SectionHeading
+            num="07"
+            kicker="What's Next"
+            title="Future improvements"
+          />
           <p
             style={{
               color: MUTED,
@@ -992,7 +1030,7 @@ export default function EarnifyCaseStudy() {
       {/* ── What I Learned ── */}
       <section style={{ padding: "100px 6vw 120px" }}>
         <div style={{ maxWidth: 760, margin: "0 auto" }}>
-          <SectionHeading kicker="Reflection" title="What I learned" />
+          <SectionHeading num="08" kicker="Reflection" title="What I learned" />
           <p style={{ color: MUTED, fontSize: 16.5, lineHeight: 1.9 }}>
             Through this earnify redesign, I gained valuable insights into
             effectively balancing business objectives with genuine user needs. I
@@ -1024,13 +1062,12 @@ export default function EarnifyCaseStudy() {
               alignItems: "center",
               gap: 8,
               marginTop: 44,
-              color: TEXT,
               fontSize: 15,
               fontWeight: 600,
               textDecoration: "none",
-              borderBottom: `2px solid ${AMBER}`,
               paddingBottom: 4,
             }}
+            className="earnify-back earnify-back--in"
           >
             <ArrowLeft size={16} /> Back to all projects
           </Link>
