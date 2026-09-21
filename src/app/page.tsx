@@ -64,12 +64,9 @@ export default function Home() {
       </section>
       <section id="projects">
         <div className="space-y-12 w-full py-12">
-          <BlurFade delay={5 * 0.1}>
+          <BlurFade inView delay={BLUR_FADE_DELAY * 2}>
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
-                <div className="inline-block rounded-lg bg-foreground text-background px-3 py-1 text-sm">
-                  My Projects
-                </div>
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
                   Check out my latest work
                 </h2>
@@ -82,7 +79,7 @@ export default function Home() {
             </div>
           </BlurFade>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 w-full max-w-2xl sm:max-w-[60vw] mx-auto">
-            <BlurFade delay={10 * 0.1}>
+            <BlurFade inView delay={BLUR_FADE_DELAY * 3}>
               <ProjectCard
                 title="BoardScan"
                 href="/boardscan"
@@ -107,7 +104,7 @@ export default function Home() {
                 className="my-custom-class"
               />
             </BlurFade>
-            <BlurFade delay={10 * 0.1}>
+            <BlurFade inView delay={BLUR_FADE_DELAY * (3 + 1 * 1.5)}>
               <ProjectCard
                 title="earnify"
                 href="/earnify"
@@ -116,6 +113,7 @@ export default function Home() {
                 tags={["Figma", "UX Research", "Product Management"]}
                 link="https://app.notion.com/p/earnify-Case-Study-1ed60ea1075c806da979c5060b8d55e8?source=copy_link"
                 image="/assets/earnify/Hero.png"
+                imageClassName="object-[50%_25%]"
                 links={[
                   {
                     icon: <Figma size={16} />,
@@ -126,7 +124,7 @@ export default function Home() {
                 className="bg-[#0B1A17]"
               />
             </BlurFade>
-            <BlurFade delay={10 * 0.1}>
+            <BlurFade inView delay={BLUR_FADE_DELAY * (3 + 2 * 1.5)}>
               <ProjectCard
                 title="ELMO - Capstone Project"
                 href="/elmo"
@@ -145,7 +143,7 @@ export default function Home() {
                 className="my-custom-class"
               />
             </BlurFade>
-            <BlurFade delay={10 * 0.1}>
+            <BlurFade inView delay={BLUR_FADE_DELAY * (3 + 3 * 1.5)}>
               <ProjectCard
                 title="The UX Website"
                 href="https://uxutd.com/"
@@ -171,7 +169,7 @@ export default function Home() {
                 rel="noopener noreferrer"
               />
             </BlurFade>
-            <BlurFade delay={11 * 0.1}>
+            <BlurFade inView delay={BLUR_FADE_DELAY * (3 + 4 * 1.5)}>
               <ProjectCard
                 title="The ACM Website"
                 href="https://acmutd.co/"
@@ -196,7 +194,7 @@ export default function Home() {
                 rel="noopener noreferrer"
               />
             </BlurFade>
-            <BlurFade delay={13 * 0.1}>
+            <BlurFade inView delay={BLUR_FADE_DELAY * (3 + 5 * 1.5)}>
               <ProjectCard
                 title="Sociate"
                 href="https://www.figma.com/design/RXnhf5yWDDQ7MydwndY1FG/UCI-Designathon-(Sociate)?node-id=0-1&t=uHGs9E88A4CRU7Xo-1"
@@ -222,7 +220,7 @@ export default function Home() {
                 rel="noopener noreferrer"
               />
             </BlurFade>
-            <BlurFade delay={12 * 0.1}>
+            <BlurFade inView delay={BLUR_FADE_DELAY * (3 + 6 * 1.5)}>
               <ProjectCard
                 title="Bankwise"
                 href="/bankwise"
@@ -246,7 +244,7 @@ export default function Home() {
                 className="my-custom-class"
               />
             </BlurFade>
-            <BlurFade delay={14 * 0.1}>
+            <BlurFade inView delay={BLUR_FADE_DELAY * (3 + 7 * 1.5)}>
               <ProjectCard
                 title="Shop & Share"
                 href="https://www.figma.com/design/6xRaV6rfhLhvA5NgHsZ4Es/Shop%26Share-Logo-Ideas?node-id=27-49&t=OYyXUF6daKQR5cJW-1"
@@ -275,12 +273,9 @@ export default function Home() {
           </div>{" "}
           <section id="Work">
             <div className="space-y-12 w-full py-12">
-              <BlurFade delay={BLUR_FADE_DELAY * 13}>
+              <BlurFade inView delay={BLUR_FADE_DELAY * 2}>
                 <div className="flex flex-col items-center justify-center space-y-4 text-center">
                   <div className="space-y-2">
-                    <div className="inline-block rounded-lg bg-foreground text-background px-3 py-1 text-sm">
-                      Work Experience
-                    </div>
                     {/* heading and flip line share one size and sit in their
                         own block so the section's space-y-2 doesn't push them
                         apart */}
@@ -322,13 +317,14 @@ export default function Home() {
                   </div>
                 </div>
               </BlurFade>
-              <BlurFade delay={BLUR_FADE_DELAY * 14}>
+              <BlurFade inView delay={BLUR_FADE_DELAY * 3}>
                 <div className="mx-auto max-w-2xl sm:max-w-[60vw]">
                   <ul className="mb-4 ml-4 divide-y divide-dashed border-l">
                     {DATA.hackathons.map((project, id) => (
                       <BlurFade
                         key={project.title + project.dates}
-                        delay={BLUR_FADE_DELAY * 15 + id * 0.05}
+                        inView
+                        delay={BLUR_FADE_DELAY * 2 + id * 0.06}
                       >
                         <HackathonCard
                           title={project.title}

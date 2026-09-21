@@ -1,7 +1,13 @@
 "use client";
 
 import { useRef } from "react";
-import { AnimatePresence, motion, useInView, Variants } from "framer-motion";
+import {
+  AnimatePresence,
+  motion,
+  useInView,
+  useReducedMotion,
+  Variants,
+} from "framer-motion";
 
 interface BlurFadeProps {
   children: React.ReactNode;
@@ -26,16 +32,24 @@ export default function BlurFade({
   delay = 0,
   yOffset = 6,
   inView = false,
-  inViewMargin = "-50px",
+  inViewMargin = "80px",
   blur = "6px",
 }: BlurFadeProps) {
   const ref = useRef(null);
   const inViewResult = useInView(ref, { once: true, margin: inViewMargin });
   const isInView = !inView || inViewResult;
-  const defaultVariants: Variants = {
-    hidden: { y: yOffset, opacity: 0, filter: `blur(${blur})` },
-    visible: { y: -yOffset, opacity: 1, filter: `blur(0px)` },
-  };
+  // no movement or blur for anyone who asked the OS for less motion; the
+  // content still fades so nothing appears to jump in
+  const reduceMotion = useReducedMotion();
+  const defaultVariants: Variants = reduceMotion
+    ? {
+        hidden: { y: 0, opacity: 0, filter: "blur(0px)" },
+        visible: { y: 0, opacity: 1, filter: "blur(0px)" },
+      }
+    : {
+        hidden: { y: yOffset, opacity: 0, filter: `blur(${blur})` },
+        visible: { y: -yOffset, opacity: 1, filter: `blur(0px)` },
+      };
   const combinedVariants = variant || defaultVariants;
   return (
     <AnimatePresence>
