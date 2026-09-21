@@ -3,74 +3,217 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { DM_Serif_Display, Work_Sans } from "next/font/google";
+import { Badge } from "@/components/ui/badge";
 import {
   Github,
   Linkedin,
   Mail,
-  ChevronDown,
-  ChevronUp,
-  ArrowRight,
+  Plus,
+  Minus,
   ArrowLeft,
+  ArrowUpRight,
 } from "lucide-react";
 
-const ACCENT = "#FF7E77";
+const display = DM_Serif_Display({
+  subsets: ["latin"],
+  weight: ["400"],
+});
 
-// ─── tiny design-system helpers ────────────────────────────────────────────
-const Tag = ({ children }) => (
+const body = Work_Sans({
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+});
+
+// ── late-night newsroom palette ─────────────────────────────────────────
+const ACCENT = "#FF7E77";
+const ACCENT_DIM = "#C25A55";
+const BG = "#0C0B0E";
+const PANEL = "#151318";
+const PANEL_ALT = "#110F14";
+const BORDER = "#2A2630";
+const TEXT = "#F4F1EE";
+const MUTED = "#9B93A4";
+
+// ── shared bits ──────────────────────────────────────────────────────────
+const Meta = ({ label, value }: { label: string; value: React.ReactNode }) => (
+  <div
+    style={{
+      padding: "18px 20px",
+      background: PANEL,
+      border: `1px solid ${BORDER}`,
+      borderRadius: 10,
+    }}
+  >
+    <p style={{ color: MUTED, fontSize: 12, margin: "0 0 8px" }}>{label}</p>
+    <div style={{ color: TEXT, fontSize: 15, lineHeight: 1.6 }}>{value}</div>
+  </div>
+);
+
+const SectionHeading = ({
+  kicker,
+  title,
+}: {
+  kicker: string;
+  title: React.ReactNode;
+}) => {
+  // "01 — The Problem" -> numeral and label, shown in one badge
+  const [num, ...rest] = kicker.split(" — ");
+  return (
+    <div style={{ marginBottom: 28 }}>
+      <Badge
+        variant="outline"
+        className="mb-4 gap-2 border-[#FF7E7740] bg-[#FF7E7712] px-3 py-1 text-[12.5px] font-medium tracking-wide text-[#FF7E77]"
+      >
+        <span className={display.className} style={{ opacity: 0.75 }}>
+          {num}
+        </span>
+        <span style={{ width: 1, height: 12, background: "#FF7E7740" }} />
+        {rest.join(" — ")}
+      </Badge>
+      <h2
+        className={display.className}
+        style={{
+          fontSize: "clamp(30px, 3.8vw, 46px)",
+          fontWeight: 400,
+          margin: 0,
+          color: TEXT,
+          letterSpacing: "-0.01em",
+          lineHeight: 1.15,
+        }}
+      >
+        {title}
+      </h2>
+    </div>
+  );
+};
+
+const Pill = ({ children }: { children: React.ReactNode }) => (
   <span
     style={{
-      display: "inline-block",
-      padding: "3px 12px",
+      padding: "6px 14px",
       borderRadius: 999,
-      border: `1px solid ${ACCENT}44`,
-      color: ACCENT,
-      fontSize: 12,
-      fontFamily: "monospace",
-      letterSpacing: "0.08em",
-      background: `${ACCENT}11`,
+      border: `1px solid ${BORDER}`,
+      color: MUTED,
+      fontSize: 13,
     }}
   >
     {children}
   </span>
 );
 
-const Divider = () => (
+const FeatureCard = ({
+  title,
+  body: text,
+}: {
+  title: string;
+  body: string;
+}) => (
   <div
     style={{
-      width: 48,
-      height: 3,
-      background: `linear-gradient(90deg, ${ACCENT}, transparent)`,
-      borderRadius: 2,
-      margin: "16px 0 24px",
-    }}
-  />
-);
-
-const SectionLabel = ({ children }) => (
-  <p
-    style={{
-      fontFamily: "monospace",
-      fontSize: 11,
-      letterSpacing: "0.2em",
-      color: ACCENT,
-      textTransform: "uppercase",
-      marginBottom: 8,
+      padding: "26px 24px",
+      background: PANEL,
+      border: `1px solid ${BORDER}`,
+      borderRadius: 12,
     }}
   >
-    {children}
-  </p>
+    <h3
+      className={display.className}
+      style={{ color: TEXT, fontSize: 19, fontWeight: 400, margin: "0 0 10px" }}
+    >
+      {title}
+    </h3>
+    <p
+      style={{
+        color: MUTED,
+        fontSize: 14.5,
+        lineHeight: 1.75,
+        margin: 0,
+        fontFamily: body.style.fontFamily,
+      }}
+    >
+      {text}
+    </p>
+  </div>
 );
 
-// ─── collapsible challenge card ────────────────────────────────────────────
-const ChallengeCard = ({ number, title, problem, solution }) => {
+const StatPill = ({ value, label }: { value: string; label: string }) => (
+  <div
+    style={{
+      width: 240,
+      flexShrink: 0,
+      padding: "18px 20px",
+      background: `linear-gradient(160deg, ${PANEL_ALT}, ${PANEL})`,
+      border: `1px solid ${BORDER}`,
+      borderRadius: 12,
+    }}
+  >
+    <p
+      className={display.className}
+      style={{
+        color: ACCENT,
+        fontSize: 26,
+        fontWeight: 400,
+        margin: "0 0 6px",
+      }}
+    >
+      {value}
+    </p>
+    <p style={{ color: MUTED, fontSize: 13.5, margin: 0, lineHeight: 1.5 }}>
+      {label}
+    </p>
+  </div>
+);
+
+const InsightRow = ({ title, text }: { title: string; text: string }) => (
+  <div
+    style={{
+      display: "grid",
+      gridTemplateColumns: "3px 1fr",
+      gap: 18,
+      padding: "4px 0",
+    }}
+  >
+    <div style={{ background: ACCENT, borderRadius: 2 }} />
+    <div>
+      <p
+        style={{
+          color: TEXT,
+          fontWeight: 600,
+          fontSize: 15,
+          margin: "0 0 4px",
+        }}
+      >
+        {title}
+      </p>
+      <p style={{ color: MUTED, fontSize: 14.5, lineHeight: 1.7, margin: 0 }}>
+        {text}
+      </p>
+    </div>
+  </div>
+);
+
+// ── collapsible challenge ────────────────────────────────────────────────
+const ChallengeCard = ({
+  number,
+  title,
+  problem,
+  solution,
+}: {
+  number: number;
+  title: string;
+  problem: string;
+  solution: string;
+}) => {
   const [open, setOpen] = useState(false);
   return (
     <div
       style={{
-        border: "1px solid #2a2a2a",
+        border: `1px solid ${BORDER}`,
         borderRadius: 12,
         overflow: "hidden",
-        background: open ? "#1c1c1c" : "transparent",
+        background: open ? PANEL : PANEL_ALT,
         transition: "background 0.25s",
       }}
     >
@@ -86,158 +229,84 @@ const ChallengeCard = ({ number, title, problem, solution }) => {
           border: "none",
           cursor: "pointer",
           textAlign: "left",
+          fontFamily: body.style.fontFamily,
         }}
       >
         <span
-          style={{
-            fontFamily: "monospace",
-            fontSize: 13,
-            color: ACCENT,
-            opacity: 0.6,
-            minWidth: 28,
-          }}
+          className={display.className}
+          style={{ fontSize: 13, color: ACCENT_DIM, minWidth: 28 }}
         >
           {String(number).padStart(2, "0")}
         </span>
-        <span
-          style={{ flex: 1, color: "#e2e8f0", fontSize: 16, fontWeight: 600 }}
-        >
+        <span style={{ flex: 1, color: TEXT, fontSize: 16, fontWeight: 600 }}>
           {title}
         </span>
-        <span style={{ color: "#555" }}>
-          {open ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-        </span>
+        <motion.span
+          animate={{ rotate: open ? 90 : 0, color: open ? ACCENT : MUTED }}
+          transition={{ duration: 0.25 }}
+          style={{ display: "flex" }}
+        >
+          <Plus size={16} />
+        </motion.span>
       </button>
-      {open && (
-        <div style={{ padding: "0 24px 24px", display: "grid", gap: 14 }}>
-          <div
-            style={{
-              padding: "14px 18px",
-              borderRadius: 8,
-              background: "#ff000011",
-              borderLeft: "3px solid #ff6b6b",
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            key="body"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{
+              height: { duration: 0.32, ease: [0.4, 0, 0.2, 1] },
+              opacity: { duration: 0.22 },
             }}
+            style={{ overflow: "hidden" }}
           >
-            <p
-              style={{
-                fontSize: 11,
-                color: "#ff6b6b",
-                fontFamily: "monospace",
-                marginBottom: 6,
-              }}
-            >
-              THE PROBLEM
-            </p>
-            <p
-              style={{
-                color: "#94a3b8",
-                fontSize: 14,
-                lineHeight: 1.7,
-                margin: 0,
-              }}
-            >
-              {problem}
-            </p>
-          </div>
-          <div
-            style={{
-              padding: "14px 18px",
-              borderRadius: 8,
-              background: `${ACCENT}0d`,
-              borderLeft: `3px solid ${ACCENT}`,
-            }}
-          >
-            <p
-              style={{
-                fontSize: 11,
-                color: ACCENT,
-                fontFamily: "monospace",
-                marginBottom: 6,
-              }}
-            >
-              HOW WE SOLVED IT
-            </p>
-            <p
-              style={{
-                color: "#94a3b8",
-                fontSize: 14,
-                lineHeight: 1.7,
-                margin: 0,
-              }}
-            >
-              {solution}
-            </p>
-          </div>
-        </div>
-      )}
+            <div style={{ padding: "0 24px 24px", display: "grid", gap: 14 }}>
+              {[
+                { label: "The problem", text: problem, color: MUTED },
+                { label: "How we solved it", text: solution, color: ACCENT },
+              ].map((block) => (
+                <div
+                  key={block.label}
+                  style={{
+                    padding: "16px 18px",
+                    borderRadius: 10,
+                    background: BG,
+                    border: `1px solid ${BORDER}`,
+                  }}
+                >
+                  <p
+                    style={{
+                      fontSize: 12,
+                      color: block.color,
+                      margin: "0 0 8px",
+                      fontWeight: 600,
+                    }}
+                  >
+                    {block.label}
+                  </p>
+                  <p
+                    style={{
+                      color: MUTED,
+                      fontSize: 14.5,
+                      lineHeight: 1.75,
+                      margin: 0,
+                    }}
+                  >
+                    {block.text}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
 
-// ─── team member card ──────────────────────────────────────────────────────
-const TeamCard = ({ name, role, contributions, highlight }) => (
-  <div
-    style={{
-      padding: "24px",
-      border: "1px solid #2a2a2a",
-      borderRadius: 12,
-      background: "#111",
-      position: "relative",
-      overflow: "hidden",
-    }}
-  >
-    <div
-      style={{
-        position: "absolute",
-        top: 0,
-        left: 0,
-        right: 0,
-        height: 2,
-        background: highlight
-          ? `linear-gradient(90deg, ${ACCENT}, transparent)`
-          : "transparent",
-      }}
-    />
-    <p
-      style={{
-        color: "#e2e8f0",
-        fontWeight: 700,
-        fontSize: 16,
-        margin: "0 0 4px",
-      }}
-    >
-      {name}
-    </p>
-    <Tag>{role}</Tag>
-    <ul
-      style={{
-        margin: "16px 0 0",
-        padding: 0,
-        listStyle: "none",
-        display: "grid",
-        gap: 8,
-      }}
-    >
-      {contributions.map((c, i) => (
-        <li
-          key={i}
-          style={{ display: "flex", gap: 10, alignItems: "flex-start" }}
-        >
-          <span
-            style={{ color: ACCENT, marginTop: 6, flexShrink: 0, fontSize: 6 }}
-          >
-            ●
-          </span>
-          <span style={{ color: "#94a3b8", fontSize: 13, lineHeight: 1.65 }}>
-            {c}
-          </span>
-        </li>
-      ))}
-    </ul>
-  </div>
-);
-
-// ─── pipeline steps with sticky hover highlight ────────────────────────────
+// ── pipeline ─────────────────────────────────────────────────────────────
 const PIPELINE = [
   {
     step: "01",
@@ -273,42 +342,30 @@ const PipelineSteps = () => {
     <div
       style={{
         display: "grid",
-        gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-        gap: 2,
+        gridTemplateColumns: "repeat(auto-fit, minmax(210px, 1fr))",
+        gap: 14,
       }}
     >
       {PIPELINE.map((item, i) => {
-        const highlighted = active === i;
+        const on = active === i;
         return (
           <div
             key={item.step}
             onMouseEnter={() => setActive(i)}
             style={{
-              padding: "28px 24px",
-              background: "#111",
-              position: "relative",
-              cursor: "default",
-              transition: "background 0.2s",
+              padding: "26px 22px",
+              background: on ? PANEL : PANEL_ALT,
+              border: `1px solid ${on ? ACCENT_DIM : BORDER}`,
+              borderRadius: 12,
+              transition: "background 0.25s, border-color 0.25s",
             }}
           >
-            {/* top highlight bar — always rendered, opacity drives visibility */}
-            <div
-              style={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                right: 0,
-                height: 2,
-                background: highlighted ? ACCENT : "#1e1e1e",
-                transition: "background 0.25s ease",
-              }}
-            />
             <span
+              className={display.className}
               style={{
-                fontFamily: "monospace",
-                fontSize: 11,
+                fontSize: 12,
                 color: ACCENT,
-                opacity: highlighted ? 1 : 0.5,
+                opacity: on ? 1 : 0.55,
                 display: "block",
                 marginBottom: 12,
                 transition: "opacity 0.25s",
@@ -317,10 +374,11 @@ const PipelineSteps = () => {
               {item.step}
             </span>
             <h3
+              className={display.className}
               style={{
-                color: highlighted ? "#f1f5f9" : "#94a3b8",
-                fontSize: 16,
-                fontWeight: 700,
+                color: on ? TEXT : MUTED,
+                fontSize: 17,
+                fontWeight: 400,
                 margin: "0 0 10px",
                 transition: "color 0.25s",
               }}
@@ -329,8 +387,8 @@ const PipelineSteps = () => {
             </h3>
             <p
               style={{
-                color: "#64748b",
-                fontSize: 13,
+                color: MUTED,
+                fontSize: 13.5,
                 lineHeight: 1.7,
                 margin: 0,
               }}
@@ -344,35 +402,15 @@ const PipelineSteps = () => {
   );
 };
 
-const InsightPill = ({ label, value }) => (
-  <div
-    style={{
-      display: "flex",
-      flexDirection: "column",
-      gap: 4,
-      padding: "16px 20px",
-      border: "1px solid #2a2a2a",
-      borderRadius: 10,
-      background: "#111",
-    }}
-  >
-    <span
-      style={{
-        fontFamily: "monospace",
-        fontSize: 11,
-        color: "#555",
-        letterSpacing: "0.1em",
-      }}
-    >
-      {label}
-    </span>
-    <span style={{ color: "#e2e8f0", fontWeight: 700, fontSize: 18 }}>
-      {value}
-    </span>
-  </div>
-);
+const METRICS = [
+  { value: "3–4 s", label: "Article summarization and expansion" },
+  { value: "~200 ms", label: "Home page load, 200 articles" },
+  { value: "~60 ms", label: "Article view load" },
+  { value: "~200 ms", label: "Auth page load" },
+  { value: "~5.6 min", label: "Daily bulk article Lambda, in the background" },
+];
 
-// ─── main component ────────────────────────────────────────────────────────
+// ── page ─────────────────────────────────────────────────────────────────
 export default function ELMOCaseStudy() {
   const challenges = [
     {
@@ -460,344 +498,334 @@ export default function ELMOCaseStudy() {
 
   return (
     <div
-      style={{
-        minHeight: "100vh",
-        background: "#0d0d0d",
-        color: "#e2e8f0",
-        fontFamily: "'Georgia', serif",
-      }}
+      className={body.className}
+      style={{ background: BG, color: TEXT, minHeight: "100vh" }}
     >
+      <style>{`
+        /* back links: muted until hover, when the text lifts to white and the
+           accent underline wipes in from the left */
+        .elmo-back {
+          position: relative;
+          color: ${MUTED};
+          transition: color 0.25s ease;
+        }
+        .elmo-back::after {
+          content: "";
+          position: absolute;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          height: 2px;
+          background: ${ACCENT};
+          transform: scaleX(0);
+          transform-origin: left;
+          transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .elmo-back:hover {
+          color: ${TEXT};
+        }
+        .elmo-back:hover::after {
+          transform: scaleX(1);
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .elmo-back::after { transition: none; }
+        }
+      `}</style>
       {/* ── Hero ── */}
       <section
         style={{
-          minHeight: "90vh",
-          display: "flex",
-          alignItems: "center",
-          padding: "80px 5vw",
           position: "relative",
           overflow: "hidden",
+          padding: "120px 6vw 80px",
         }}
       >
-        {/* background mesh */}
         <div
           style={{
             position: "absolute",
             inset: 0,
-            background: `
-              radial-gradient(ellipse 60% 50% at 15% 0%, ${ACCENT}18 0%, transparent 60%),
-              radial-gradient(ellipse 40% 40% at 85% 100%, ${ACCENT}0d 0%, transparent 60%)
-            `,
-            pointerEvents: "none",
-          }}
-        />
-        {/* grid lines */}
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            backgroundImage: `linear-gradient(#ffffff05 1px, transparent 1px), linear-gradient(90deg, #ffffff05 1px, transparent 1px)`,
-            backgroundSize: "60px 60px",
+            background: `radial-gradient(ellipse 55% 45% at 12% -5%, ${ACCENT}22 0%, transparent 60%), radial-gradient(ellipse 45% 40% at 88% 10%, ${ACCENT}14 0%, transparent 60%)`,
             pointerEvents: "none",
           }}
         />
 
-        <div
-          style={{
-            position: "relative",
-            width: "100%",
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: "clamp(40px, 6vw, 100px)",
-            alignItems: "center",
-          }}
-        >
-          {/* Left: text */}
-          <div>
-            <Link
-              href="/#projects"
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 8,
-                color: "#94a3b8",
-                fontSize: 14,
-                textDecoration: "none",
-                marginBottom: 32,
-              }}
-            >
-              <ArrowLeft size={15} /> Back to projects
-            </Link>
-
-            <div
-              style={{
-                display: "flex",
-                gap: 10,
-                marginBottom: 32,
-                flexWrap: "wrap",
-              }}
-            >
-              <Tag>CS 4485.0W1 · UT Dallas</Tag>
-              <Tag>Jan – May 2025</Tag>
-              <Tag>Team of 5</Tag>
-            </div>
-
-            <h1
-              style={{
-                fontSize: "clamp(52px, 7vw, 100px)",
-                fontWeight: 900,
-                lineHeight: 0.92,
-                margin: "0 0 28px",
-                color: "#f1f5f9",
-                letterSpacing: "-0.03em",
-              }}
-            >
-              ELMO
-            </h1>
-
-            <p
-              style={{
-                fontSize: "clamp(15px, 1.5vw, 20px)",
-                color: "#94a3b8",
-                lineHeight: 1.75,
-                margin: "0 0 40px",
-              }}
-            >
-              An AI-powered news platform that aggregates content from across
-              the web, eliminates redundancy, and delivers personalized
-              summaries — built in one semester by five students at the
-              University of Texas at Dallas.
-            </p>
-
-            <a
-              href="https://github.com/Sharktail001/ELMO-Capstone-Proj"
-              target="_blank"
-              rel="noreferrer"
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 10,
-                padding: "14px 28px",
-                background: ACCENT,
-                color: "#fff",
-                borderRadius: 8,
-                fontFamily: "sans-serif",
-                fontSize: 14,
-                fontWeight: 600,
-                textDecoration: "none",
-                letterSpacing: "0.02em",
-              }}
-            >
-              <Github size={16} /> View Repository <ArrowRight size={14} />
-            </a>
-          </div>
-
-          {/* Right: product screenshot */}
-          <div
+        <div style={{ position: "relative", maxWidth: 1200, margin: "0 auto" }}>
+          <Link
+            href="/#projects"
+            className="elmo-back"
             style={{
-              position: "relative",
-              borderRadius: 16,
-              overflow: "hidden",
-              boxShadow: `0 0 0 1px #2a2a2a, 0 40px 80px -20px #000000cc, 0 0 60px ${ACCENT}22`,
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 8,
+              fontSize: 14,
+              textDecoration: "none",
+              marginBottom: 40,
+              paddingBottom: 4,
             }}
           >
-            {/* browser chrome strip */}
+            <ArrowLeft size={15} /> Back to projects
+          </Link>
+
+          <div className="grid items-center gap-12 lg:grid-cols-2">
+            <div>
+              <div
+                style={{
+                  display: "flex",
+                  gap: 10,
+                  flexWrap: "wrap",
+                  marginBottom: 28,
+                }}
+              >
+                <Pill>Case Study</Pill>
+                <Pill>CS 4485 · UT Dallas</Pill>
+                <Pill>Jan – May 2025</Pill>
+              </div>
+
+              <h1
+                className={display.className}
+                style={{
+                  fontSize: "clamp(58px, 8.4vw, 110px)",
+                  fontWeight: 400,
+                  lineHeight: 0.95,
+                  letterSpacing: "-0.03em",
+                  margin: "0 0 24px",
+                }}
+              >
+                ELMO
+              </h1>
+
+              <p
+                style={{
+                  fontSize: "clamp(16px, 1.5vw, 19px)",
+                  color: MUTED,
+                  lineHeight: 1.75,
+                  maxWidth: 560,
+                  margin: "0 0 36px",
+                }}
+              >
+                An AI-powered news platform that aggregates content from across
+                the web, eliminates redundancy, and delivers personalized
+                summaries — built in one semester by five students at the
+                University of Texas at Dallas.
+              </p>
+
+              <a
+                href="https://github.com/Sharktail001/ELMO-Capstone-Proj"
+                target="_blank"
+                rel="noreferrer"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 10,
+                  padding: "14px 26px",
+                  background: ACCENT,
+                  color: "#1A0F0E",
+                  borderRadius: 10,
+                  fontSize: 14.5,
+                  fontWeight: 600,
+                  textDecoration: "none",
+                }}
+              >
+                <Github size={16} /> View repository <ArrowUpRight size={15} />
+              </a>
+            </div>
+
+            {/* product screenshot in a browser frame */}
             <div
               style={{
-                background: "#1a1a1a",
-                padding: "10px 16px",
-                display: "flex",
-                alignItems: "center",
-                gap: 6,
-                borderBottom: "1px solid #2a2a2a",
+                borderRadius: 16,
+                overflow: "hidden",
+                border: `1px solid ${BORDER}`,
+                boxShadow: `0 40px 80px -30px #000000cc, 0 0 70px ${ACCENT}1a`,
               }}
             >
               <div
                 style={{
-                  width: 10,
-                  height: 10,
-                  borderRadius: "50%",
-                  background: "#ff5f56",
-                }}
-              />
-              <div
-                style={{
-                  width: 10,
-                  height: 10,
-                  borderRadius: "50%",
-                  background: "#ffbd2e",
-                }}
-              />
-              <div
-                style={{
-                  width: 10,
-                  height: 10,
-                  borderRadius: "50%",
-                  background: "#27c93f",
-                }}
-              />
-              <div
-                style={{
-                  flex: 1,
-                  marginLeft: 12,
-                  background: "#222",
-                  borderRadius: 4,
-                  height: 22,
+                  background: PANEL,
+                  padding: "10px 16px",
                   display: "flex",
                   alignItems: "center",
-                  justifyContent: "center",
+                  gap: 6,
+                  borderBottom: `1px solid ${BORDER}`,
                 }}
               >
-                <span
+                {["#ff5f56", "#ffbd2e", "#27c93f"].map((c) => (
+                  <div
+                    key={c}
+                    style={{
+                      width: 10,
+                      height: 10,
+                      borderRadius: "50%",
+                      background: c,
+                      opacity: 0.8,
+                    }}
+                  />
+                ))}
+                <div
                   style={{
-                    color: "#555",
-                    fontSize: 10,
-                    fontFamily: "monospace",
+                    flex: 1,
+                    marginLeft: 12,
+                    background: BG,
+                    borderRadius: 5,
+                    height: 22,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
                   }}
                 >
-                  elmo.app
-                </span>
+                  <span style={{ color: MUTED, fontSize: 11 }}>elmo.app</span>
+                </div>
               </div>
+              <Image
+                src="/assets/elmo-screenshot.png"
+                alt="ELMO product screenshot"
+                width={2000}
+                height={2000}
+                style={{ width: "100%", height: "auto", display: "block" }}
+              />
             </div>
-            <Image
-              src="/assets/elmo-screenshot.png"
-              alt="ELMO product screenshot"
-              width={2000}
-              height={2000}
-              className="w-full block"
-            />
           </div>
+        </div>
+      </section>
+
+      {/* ── Meta strip ── */}
+      <section style={{ padding: "40px 6vw 90px" }}>
+        <div
+          style={{
+            maxWidth: 1200,
+            margin: "0 auto",
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+            gap: 14,
+          }}
+        >
+          <Meta label="My Role" value="AI Engineer" />
+          <Meta label="Timeline" value="January 2025 – May 2025" />
+          <Meta
+            label="Stack"
+            value="Next.js · AWS · DeepSeek R1:14b · Pinecone"
+          />
+          <Meta
+            label="Team"
+            value="5 students, supervised by Prof. Sridhar Alagar"
+          />
         </div>
       </section>
 
       {/* ── The Problem ── */}
-      <section
-        style={{ padding: "100px 5vw", maxWidth: 1200, margin: "0 auto" }}
-      >
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: 80,
-            alignItems: "start",
-          }}
-        >
-          <div>
-            <SectionLabel>01 — The Problem</SectionLabel>
-            <h2
-              style={{
-                fontSize: "clamp(28px, 4vw, 42px)",
-                fontWeight: 800,
-                lineHeight: 1.2,
-                margin: "0 0 8px",
-                letterSpacing: "-0.02em",
-              }}
-            >
-              Too much news.
-              <br />
-              Too little signal.
-            </h2>
-            <Divider />
-            <p style={{ color: "#94a3b8", lineHeight: 1.85, fontSize: 16 }}>
-              The average person trying to stay informed today must navigate
-              dozens of sources, frequently encountering the same story
-              rewritten three different ways before finding anything new. The
-              fragmentation is exhausting — and the cure is often worse than the
-              disease. Algorithmic feeds designed to keep you engaged tend to
-              deepen filter bubbles, showing you content that confirms what you
-              already believe rather than broadening your perspective.
-            </p>
-            <p
-              style={{
-                color: "#94a3b8",
-                lineHeight: 1.85,
-                fontSize: 16,
-                marginTop: 16,
-              }}
-            >
-              ELMO was built to solve exactly this. Rather than adding yet
-              another news feed, we built a platform that <em>synthesizes</em> —
-              pulling from multiple sources, stripping out the redundancy, and
-              letting users control how deep they want to go on any given topic.
-            </p>
-          </div>
-          <div style={{ display: "grid", gap: 16, paddingTop: 20 }}>
-            {[
-              [
-                "Core Goal",
-                "Aggregate news without repeating it — comprehensive coverage, zero redundancy",
-              ],
-              [
-                "User Control",
-                "Choose between concise summaries or full deep-dives based on your time and interest",
-              ],
-              [
-                "Source Transparency",
-                "Users can see and manage where their content comes from",
-              ],
-              [
-                "Live Context",
-                "RAG pipeline brings in articles published within the last 24 hours, beyond any model's training data",
-              ],
-            ].map(([label, desc]) => (
-              <div
-                key={label}
+      <section style={{ padding: "0 6vw 90px" }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+          <div className="grid gap-12 lg:grid-cols-2">
+            <div>
+              <SectionHeading
+                kicker="01 — The Problem"
+                title={
+                  <>
+                    Too much news.
+                    <br />
+                    Too little signal.
+                  </>
+                }
+              />
+              <p
                 style={{
-                  padding: "20px 22px",
-                  border: "1px solid #1e1e1e",
-                  borderRadius: 10,
-                  background: "#111",
+                  color: MUTED,
+                  fontSize: 16,
+                  lineHeight: 1.85,
+                  margin: 0,
                 }}
               >
-                <p
+                The average person trying to stay informed today must navigate
+                dozens of sources, frequently encountering the same story
+                rewritten three different ways before finding anything new. The
+                fragmentation is exhausting, and the cure is often worse than
+                the disease. Algorithmic feeds designed to keep you engaged tend
+                to deepen filter bubbles, showing you content that confirms what
+                you already believe rather than broadening your perspective.
+              </p>
+              <p
+                style={{
+                  color: MUTED,
+                  fontSize: 16,
+                  lineHeight: 1.85,
+                  marginTop: 16,
+                }}
+              >
+                ELMO was built to solve exactly this. Rather than adding yet
+                another news feed, we built a platform that synthesizes: pulling
+                from multiple sources, stripping out the redundancy, and letting
+                users control how deep they want to go on any given topic.
+              </p>
+            </div>
+
+            <div style={{ display: "grid", gap: 14, alignContent: "start" }}>
+              {[
+                [
+                  "Core goal",
+                  "Aggregate news without repeating it — comprehensive coverage, zero redundancy",
+                ],
+                [
+                  "User control",
+                  "Choose between concise summaries or full deep-dives based on your time and interest",
+                ],
+                [
+                  "Source transparency",
+                  "Users can see and manage where their content comes from",
+                ],
+                [
+                  "Live context",
+                  "RAG pipeline brings in articles published within the last 24 hours, beyond any model's training data",
+                ],
+              ].map(([label, desc]) => (
+                <div
+                  key={label}
                   style={{
-                    color: ACCENT,
-                    fontSize: 12,
-                    fontFamily: "monospace",
-                    margin: "0 0 6px",
-                    letterSpacing: "0.08em",
+                    padding: "20px 22px",
+                    border: `1px solid ${BORDER}`,
+                    borderRadius: 10,
+                    background: PANEL,
                   }}
                 >
-                  {label}
-                </p>
-                <p
-                  style={{
-                    color: "#94a3b8",
-                    fontSize: 14,
-                    lineHeight: 1.65,
-                    margin: 0,
-                  }}
-                >
-                  {desc}
-                </p>
-              </div>
-            ))}
+                  <p
+                    style={{
+                      color: ACCENT,
+                      fontSize: 13,
+                      margin: "0 0 6px",
+                      fontWeight: 600,
+                    }}
+                  >
+                    {label}
+                  </p>
+                  <p
+                    style={{
+                      color: MUTED,
+                      fontSize: 14,
+                      lineHeight: 1.7,
+                      margin: 0,
+                    }}
+                  >
+                    {desc}
+                  </p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
 
-      {/* ── How It Works ── */}
-      <section style={{ padding: "80px 5vw", background: "#0f0f0f" }}>
+      {/* ── How it works ── */}
+      <section style={{ padding: "90px 6vw", background: PANEL_ALT }}>
         <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-          <SectionLabel>02 — How It Works</SectionLabel>
-          <h2
-            style={{
-              fontSize: "clamp(28px, 4vw, 42px)",
-              fontWeight: 800,
-              lineHeight: 1.2,
-              margin: "0 0 8px",
-              letterSpacing: "-0.02em",
-            }}
-          >
-            The Content Pipeline
-          </h2>
-          <Divider />
+          <SectionHeading
+            kicker="02 — How It Works"
+            title="The content pipeline"
+          />
           <p
             style={{
-              color: "#94a3b8",
-              lineHeight: 1.85,
+              color: MUTED,
               fontSize: 16,
-              maxWidth: 680,
-              marginBottom: 48,
+              lineHeight: 1.85,
+              maxWidth: 720,
+              marginBottom: 40,
             }}
           >
             ELMO&apos;s architecture is a deliberate layering of three systems:
@@ -807,117 +835,88 @@ export default function ELMOCaseStudy() {
             built by the AI Engineer on the team.
           </p>
 
-          {/* pipeline steps */}
           <PipelineSteps />
 
-          {/* real perf numbers — marquee */}
-          <div style={{ marginTop: 48 }}>
+          <div style={{ marginTop: 56 }}>
             <p
               style={{
-                fontFamily: "monospace",
-                fontSize: 11,
-                color: "#555",
-                letterSpacing: "0.15em",
-                marginBottom: 16,
-                textTransform: "uppercase",
+                color: ACCENT,
+                fontSize: 14,
+                fontWeight: 600,
+                margin: "0 0 18px",
               }}
             >
               Measured in production
             </p>
 
-            {/* marquee container */}
             <style>{`
-              @keyframes marquee {
+              @keyframes elmo-marquee {
                 0%   { transform: translateX(0); }
                 100% { transform: translateX(-50%); }
               }
-              .metrics-track {
+              .elmo-metrics-track {
                 display: flex;
                 width: max-content;
-                animation: marquee 22s linear infinite;
+                animation: elmo-marquee 26s linear infinite;
               }
-              .metrics-track:hover {
-                animation-play-state: paused;
+              .elmo-metrics-track:hover { animation-play-state: paused; }
+              @media (prefers-reduced-motion: reduce) {
+                .elmo-metrics-track { animation: none; }
               }
             `}</style>
-
             <div
               style={{
                 overflow: "hidden",
                 WebkitMaskImage:
-                  "linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%)",
+                  "linear-gradient(90deg, transparent 0%, black 7%, black 93%, transparent 100%)",
                 maskImage:
-                  "linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%)",
+                  "linear-gradient(90deg, transparent 0%, black 7%, black 93%, transparent 100%)",
               }}
             >
-              <div className="metrics-track">
-                {/* render the list twice so the loop is seamless */}
+              <div className="elmo-metrics-track">
+                {/* the list is rendered twice so the loop never shows a seam */}
                 {[0, 1].map((copy) => (
                   <div
                     key={copy}
                     style={{ display: "flex", gap: 12, paddingRight: 12 }}
                   >
-                    <InsightPill
-                      label="Article summarization / expansion"
-                      value="~3–4 seconds"
-                    />
-                    <InsightPill
-                      label="Page load (Home — 200 articles)"
-                      value="~200 ms"
-                    />
-                    <InsightPill label="Article view load" value="~60 ms" />
-                    <InsightPill
-                      label="Daily bulk article Lambda"
-                      value="~5.6 min (background)"
-                    />
-                    <InsightPill label="Auth page load" value="~200 ms" />
+                    {METRICS.map((m) => (
+                      <StatPill
+                        key={`${copy}-${m.label}`}
+                        value={m.value}
+                        label={m.label}
+                      />
+                    ))}
                   </div>
                 ))}
               </div>
             </div>
-
-            <p
-              style={{
-                color: "#555",
-                fontSize: 13,
-                marginTop: 12,
-                fontFamily: "sans-serif",
-              }}
-            >
-              The 14-second AI generation Lambda runs in the background — users
-              only experience the 3–4s summarization endpoints.
+            <p style={{ color: MUTED, fontSize: 13.5, marginTop: 14 }}>
+              The 14-second AI generation Lambda runs in the background, so
+              users only experience the 3–4s summarization endpoints.
             </p>
           </div>
         </div>
       </section>
 
-      {/* ── AWS Stack ── */}
-      <section style={{ padding: "80px 5vw" }}>
+      {/* ── Infrastructure ── */}
+      <section style={{ padding: "90px 6vw" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-          <SectionLabel>03 — Infrastructure</SectionLabel>
-          <h2
-            style={{
-              fontSize: "clamp(28px, 4vw, 42px)",
-              fontWeight: 800,
-              lineHeight: 1.2,
-              margin: "0 0 8px",
-              letterSpacing: "-0.02em",
-            }}
-          >
-            Built exclusively on AWS
-          </h2>
-          <Divider />
+          <SectionHeading
+            kicker="03 — Infrastructure"
+            title="Built exclusively on AWS"
+          />
           <p
             style={{
-              color: "#94a3b8",
-              lineHeight: 1.85,
+              color: MUTED,
               fontSize: 16,
-              maxWidth: 680,
-              marginBottom: 40,
+              lineHeight: 1.85,
+              maxWidth: 720,
+              marginBottom: 36,
             }}
           >
             Rather than mixing cloud providers, we committed entirely to the AWS
-            ecosystem — both to keep our architecture coherent and because the
+            ecosystem, both to keep our architecture coherent and because the
             capstone gave us a chance to understand how these services actually
             fit together in a real application.
           </p>
@@ -925,7 +924,7 @@ export default function ELMOCaseStudy() {
             style={{
               display: "grid",
               gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
-              gap: 16,
+              gap: 14,
             }}
           >
             {[
@@ -960,115 +959,50 @@ export default function ELMOCaseStudy() {
                   "Scheduled triggers for background tasks like the daily article curation Lambda — so 200 fresh articles are ready before users open the app each morning.",
               },
             ].map((s) => (
-              <div
+              <FeatureCard
                 key={s.service}
-                style={{
-                  padding: "22px 22px",
-                  border: "1px solid #1e1e1e",
-                  borderRadius: 10,
-                  background: "#111",
-                }}
-              >
-                <div
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: 8,
-                    marginBottom: 10,
-                  }}
-                >
-                  <div
-                    style={{
-                      width: 6,
-                      height: 6,
-                      borderRadius: "50%",
-                      background: ACCENT,
-                      flexShrink: 0,
-                    }}
-                  />
-                  <span
-                    style={{
-                      color: "#f1f5f9",
-                      fontWeight: 700,
-                      fontSize: 15,
-                      fontFamily: "sans-serif",
-                    }}
-                  >
-                    AWS {s.service}
-                  </span>
-                </div>
-                <p
-                  style={{
-                    color: "#64748b",
-                    fontSize: 13,
-                    lineHeight: 1.7,
-                    margin: 0,
-                    fontFamily: "sans-serif",
-                  }}
-                >
-                  {s.purpose}
-                </p>
-              </div>
+                title={`AWS ${s.service}`}
+                body={s.purpose}
+              />
             ))}
           </div>
         </div>
       </section>
 
       {/* ── Challenges ── */}
-      <section style={{ padding: "80px 5vw", background: "#0f0f0f" }}>
-        <div style={{ maxWidth: 800, margin: "0 auto" }}>
-          <SectionLabel>04 — What Broke</SectionLabel>
-          <h2
-            style={{
-              fontSize: "clamp(28px, 4vw, 42px)",
-              fontWeight: 800,
-              lineHeight: 1.2,
-              margin: "0 0 8px",
-              letterSpacing: "-0.02em",
-            }}
-          >
-            The challenges that shaped ELMO
-          </h2>
-          <Divider />
+      <section style={{ padding: "90px 6vw", background: PANEL_ALT }}>
+        <div style={{ maxWidth: 860, margin: "0 auto" }}>
+          <SectionHeading
+            kicker="04 — What Broke"
+            title="The challenges that shaped ELMO"
+          />
           <p
             style={{
-              color: "#94a3b8",
-              lineHeight: 1.85,
+              color: MUTED,
               fontSize: 16,
-              marginBottom: 36,
+              lineHeight: 1.85,
+              marginBottom: 32,
             }}
           >
-            Every significant technical decision we made was driven by something
-            breaking first. Click each challenge to read what actually happened
-            and how we got through it.
+            Every one of these cost us days. Open any of them to see what went
+            wrong and what we did about it.
           </p>
-          <div style={{ display: "grid", gap: 8 }}>
+          <div style={{ display: "grid", gap: 12 }}>
             {challenges.map((c, i) => (
-              <ChallengeCard key={i} number={i + 1} {...c} />
+              <ChallengeCard key={c.title} number={i + 1} {...c} />
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── Key Decisions ── */}
-      <section style={{ padding: "80px 5vw" }}>
+      {/* ── Decisions ── */}
+      <section style={{ padding: "90px 6vw" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-          <SectionLabel>05 — Decisions</SectionLabel>
-          <h2
-            style={{
-              fontSize: "clamp(28px, 4vw, 42px)",
-              fontWeight: 800,
-              lineHeight: 1.2,
-              margin: "0 0 8px",
-              letterSpacing: "-0.02em",
-            }}
-          >
-            Design choices worth understanding
-          </h2>
-          <Divider />
-          <div
-            style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}
-          >
+          <SectionHeading
+            kicker="05 — Decisions"
+            title="Design choices worth understanding"
+          />
+          <div className="grid gap-3.5 md:grid-cols-2">
             {[
               {
                 title: "Why RAG over fine-tuning?",
@@ -1087,67 +1021,26 @@ export default function ELMOCaseStudy() {
                 body: "User research in the news space consistently shows that different contexts call for different depths: a commuter wants a headline and three sentences, a researcher wants the full story with sources. We built two one-tap AI calls — 'Simplify' and 'Expand' — on every article view, so users can go deeper or shallower without changing screens. The design philosophy was to anticipate user needs rather than require users to navigate to a settings page.",
               },
             ].map((d) => (
-              <div
-                key={d.title}
-                style={{
-                  padding: "28px",
-                  border: "1px solid #1e1e1e",
-                  borderRadius: 12,
-                  background: "#111",
-                }}
-              >
-                <h3
-                  style={{
-                    color: ACCENT,
-                    fontSize: 15,
-                    fontWeight: 700,
-                    fontFamily: "sans-serif",
-                    margin: "0 0 12px",
-                  }}
-                >
-                  {d.title}
-                </h3>
-                <p
-                  style={{
-                    color: "#94a3b8",
-                    fontSize: 14,
-                    lineHeight: 1.75,
-                    margin: 0,
-                    fontFamily: "sans-serif",
-                  }}
-                >
-                  {d.body}
-                </p>
-              </div>
+              <FeatureCard key={d.title} title={d.title} body={d.body} />
             ))}
           </div>
         </div>
       </section>
 
       {/* ── Team ── */}
-      <section style={{ padding: "80px 5vw", background: "#0f0f0f" }}>
+      <section style={{ padding: "90px 6vw", background: PANEL_ALT }}>
         <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-          <SectionLabel>06 — The Team</SectionLabel>
-          <h2
-            style={{
-              fontSize: "clamp(28px, 4vw, 42px)",
-              fontWeight: 800,
-              lineHeight: 1.2,
-              margin: "0 0 8px",
-              letterSpacing: "-0.02em",
-            }}
-          >
-            Five people, one semester
-          </h2>
-          <Divider />
+          <SectionHeading
+            kicker="06 — The Team"
+            title="Five people, one semester"
+          />
           <p
             style={{
-              color: "#94a3b8",
-              lineHeight: 1.85,
+              color: MUTED,
               fontSize: 16,
-              maxWidth: 640,
-              marginBottom: 36,
-              fontFamily: "sans-serif",
+              lineHeight: 1.85,
+              maxWidth: 680,
+              marginBottom: 32,
             }}
           >
             ELMO was a capstone project for CS 4485 at UT Dallas, supervised by
@@ -1155,37 +1048,100 @@ export default function ELMOCaseStudy() {
             the system, with collaboration happening through weekly sprints,
             GitHub Projects, and daily Discord syncs.
           </p>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-              gap: 16,
-            }}
-          >
-            {team.map((t) => (
-              <TeamCard key={t.name} {...t} />
+          {/* six columns, each card spanning two: three on the first row, and
+              the last two centred by starting the fourth at column two */}
+          <div className="grid auto-rows-fr gap-3.5 sm:grid-cols-2 lg:grid-cols-6">
+            {team.map((t, i) => (
+              <div
+                key={t.name}
+                className={
+                  i === 3 ? "lg:col-span-2 lg:col-start-2" : "lg:col-span-2"
+                }
+                style={{
+                  padding: "24px 22px",
+                  border: `1px solid ${t.highlight ? ACCENT_DIM : BORDER}`,
+                  borderRadius: 12,
+                  background: PANEL,
+                }}
+              >
+                <p
+                  className={display.className}
+                  style={{
+                    color: TEXT,
+                    fontWeight: 400,
+                    fontSize: 19,
+                    margin: "0 0 8px",
+                  }}
+                >
+                  {t.name}
+                </p>
+                <span
+                  style={{
+                    display: "inline-block",
+                    padding: "4px 12px",
+                    borderRadius: 999,
+                    border: `1px solid ${ACCENT}44`,
+                    background: `${ACCENT}12`,
+                    color: ACCENT,
+                    fontSize: 12.5,
+                  }}
+                >
+                  {t.role}
+                </span>
+                <ul
+                  style={{
+                    margin: "16px 0 0",
+                    padding: 0,
+                    listStyle: "none",
+                    display: "grid",
+                    gap: 10,
+                  }}
+                >
+                  {t.contributions.map((c) => (
+                    <li
+                      key={c}
+                      style={{
+                        display: "grid",
+                        gridTemplateColumns: "6px 1fr",
+                        gap: 12,
+                        alignItems: "start",
+                      }}
+                    >
+                      <span
+                        style={{
+                          width: 6,
+                          height: 6,
+                          borderRadius: "50%",
+                          background: ACCENT,
+                          marginTop: 8,
+                        }}
+                      />
+                      <span
+                        style={{
+                          color: MUTED,
+                          fontSize: 13.5,
+                          lineHeight: 1.7,
+                        }}
+                      >
+                        {c}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── What We Learned ── */}
-      <section style={{ padding: "80px 5vw" }}>
+      {/* ── Takeaways ── */}
+      <section style={{ padding: "90px 6vw" }}>
         <div style={{ maxWidth: 860, margin: "0 auto" }}>
-          <SectionLabel>07 — Takeaways</SectionLabel>
-          <h2
-            style={{
-              fontSize: "clamp(28px, 4vw, 42px)",
-              fontWeight: 800,
-              lineHeight: 1.2,
-              margin: "0 0 8px",
-              letterSpacing: "-0.02em",
-            }}
-          >
-            What building ELMO actually taught us
-          </h2>
-          <Divider />
-          <div style={{ display: "grid", gap: 28, fontFamily: "sans-serif" }}>
+          <SectionHeading
+            kicker="07 — Takeaways"
+            title="What building ELMO actually taught us"
+          />
+          <div style={{ display: "grid", gap: 26 }}>
             {[
               {
                 heading: "Context is everything in LLM prompting",
@@ -1205,73 +1161,24 @@ export default function ELMOCaseStudy() {
                 body: "We didn't conduct formal user studies, but we did constantly ask ourselves how we'd want to use the app. That question led us to cut several features we'd initially planned — category filters that were too granular, a recommendation engine we didn't have time to tune well — in favor of making the core reading experience fast and clean. The two-state article view (Simplify / Expand) came from this mindset.",
               },
             ].map((t) => (
-              <div
-                key={t.heading}
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "3px 1fr",
-                  gap: 24,
-                  alignItems: "start",
-                }}
-              >
-                <div
-                  style={{
-                    height: "100%",
-                    background: `linear-gradient(${ACCENT}, transparent)`,
-                    borderRadius: 2,
-                    minHeight: 80,
-                  }}
-                />
-                <div>
-                  <h3
-                    style={{
-                      color: "#f1f5f9",
-                      fontSize: 17,
-                      fontWeight: 700,
-                      margin: "0 0 10px",
-                    }}
-                  >
-                    {t.heading}
-                  </h3>
-                  <p
-                    style={{
-                      color: "#94a3b8",
-                      fontSize: 15,
-                      lineHeight: 1.8,
-                      margin: 0,
-                    }}
-                  >
-                    {t.body}
-                  </p>
-                </div>
-              </div>
+              <InsightRow key={t.heading} title={t.heading} text={t.body} />
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── What's Next ── */}
-      <section style={{ padding: "80px 5vw", background: "#0f0f0f" }}>
+      {/* ── Future work ── */}
+      <section style={{ padding: "90px 6vw", background: PANEL_ALT }}>
         <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-          <SectionLabel>08 — Future Work</SectionLabel>
-          <h2
-            style={{
-              fontSize: "clamp(28px, 4vw, 42px)",
-              fontWeight: 800,
-              lineHeight: 1.2,
-              margin: "0 0 8px",
-              letterSpacing: "-0.02em",
-            }}
-          >
-            Where ELMO goes next
-          </h2>
-          <Divider />
+          <SectionHeading
+            kicker="08 — Future Work"
+            title="Where ELMO goes next"
+          />
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-              gap: 16,
-              fontFamily: "sans-serif",
+              gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+              gap: 14,
             }}
           >
             {[
@@ -1311,17 +1218,17 @@ export default function ELMOCaseStudy() {
               <div
                 key={f.area}
                 style={{
-                  padding: "20px",
-                  border: "1px solid #1e1e1e",
+                  padding: "20px 22px",
+                  border: `1px solid ${BORDER}`,
                   borderRadius: 10,
-                  background: "#111",
+                  background: PANEL,
                 }}
               >
                 <p
                   style={{
-                    color: "#f1f5f9",
-                    fontWeight: 700,
-                    fontSize: 14,
+                    color: TEXT,
+                    fontWeight: 600,
+                    fontSize: 14.5,
                     margin: "0 0 6px",
                   }}
                 >
@@ -1329,9 +1236,9 @@ export default function ELMOCaseStudy() {
                 </p>
                 <p
                   style={{
-                    color: "#64748b",
-                    fontSize: 13,
-                    lineHeight: 1.6,
+                    color: MUTED,
+                    fontSize: 13.5,
+                    lineHeight: 1.65,
                     margin: 0,
                   }}
                 >
@@ -1340,29 +1247,46 @@ export default function ELMOCaseStudy() {
               </div>
             ))}
           </div>
+
+          <Link
+            href="/#projects"
+            className="elmo-back"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 8,
+              marginTop: 48,
+              fontSize: 15,
+              fontWeight: 600,
+              textDecoration: "none",
+              paddingBottom: 4,
+            }}
+          >
+            <ArrowLeft size={16} /> Back to all projects
+          </Link>
         </div>
       </section>
 
       {/* ── Contact ── */}
-      <section style={{ padding: "80px 5vw 120px" }}>
+      <section style={{ padding: "100px 6vw 120px" }}>
         <div style={{ maxWidth: 560, margin: "0 auto", textAlign: "center" }}>
           <h2
+            className={display.className}
             style={{
-              fontSize: "clamp(24px, 3vw, 36px)",
-              fontWeight: 800,
+              fontSize: "clamp(28px, 3.2vw, 38px)",
+              fontWeight: 400,
               margin: "0 0 12px",
-              letterSpacing: "-0.02em",
+              letterSpacing: "-0.01em",
             }}
           >
             Want to talk about it?
           </h2>
           <p
             style={{
-              color: "#94a3b8",
-              fontSize: 15,
-              lineHeight: 1.7,
-              marginBottom: 36,
-              fontFamily: "sans-serif",
+              color: MUTED,
+              fontSize: 15.5,
+              lineHeight: 1.75,
+              marginBottom: 32,
             }}
           >
             Interested in AI engineering, RAG pipelines, or what it&apos;s like
@@ -1371,7 +1295,7 @@ export default function ELMOCaseStudy() {
           <div
             style={{
               display: "flex",
-              gap: 14,
+              gap: 12,
               justifyContent: "center",
               flexWrap: "wrap",
             }}
@@ -1403,13 +1327,12 @@ export default function ELMOCaseStudy() {
                   alignItems: "center",
                   gap: 8,
                   padding: "12px 22px",
-                  border: `1px solid #2a2a2a`,
-                  borderRadius: 8,
-                  color: "#94a3b8",
-                  fontFamily: "sans-serif",
+                  border: `1px solid ${BORDER}`,
+                  borderRadius: 10,
+                  color: MUTED,
                   fontSize: 14,
                   textDecoration: "none",
-                  background: "#111",
+                  background: PANEL,
                   transition: "border-color 0.2s, color 0.2s",
                 }}
                 onMouseEnter={(e) => {
@@ -1417,8 +1340,8 @@ export default function ELMOCaseStudy() {
                   e.currentTarget.style.color = ACCENT;
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.borderColor = "#2a2a2a";
-                  e.currentTarget.style.color = "#94a3b8";
+                  e.currentTarget.style.borderColor = BORDER;
+                  e.currentTarget.style.color = MUTED;
                 }}
               >
                 {l.icon} {l.label}

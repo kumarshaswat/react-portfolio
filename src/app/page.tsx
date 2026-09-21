@@ -296,6 +296,7 @@ export default function Home() {
                           the side projects I said yes to too fast.
                         </span>
                         <FlipWords
+                          letterDelay={0.022}
                           className="absolute inset-x-0 top-0 whitespace-nowrap pl-[0.1em] pr-0 text-center text-[clamp(1rem,4.4vw,3.25rem)] font-bold leading-tight tracking-tighter text-[#7374be] dark:text-[#9394f1]"
                           words={[
                             "the work that actually shipped.",
