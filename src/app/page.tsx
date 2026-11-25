@@ -5,6 +5,7 @@ import DotPattern from "@/components/magicui/dot-pattern";
 import WordRotate from "@/components/magicui/word-rotate";
 import { FlipWords } from "@/components/ui/flip-words";
 import BlurFade from "@/components/magicui/blur-fade";
+import { ScrollAway } from "@/components/scroll-effects";
 import ProjectCard from "@/components/project-card";
 import { Github, BookText, Figma, Link } from "lucide-react";
 import { HackathonCard } from "@/components/ui/hackathon-card";
@@ -16,51 +17,53 @@ export default function Home() {
   return (
     <main className="flex min-h-screen flex-col h-full w-full px-6">
       <section className="items-left pt-[15vh] pb-[10vh] sm:pl-[8vw] lg:pl-[16vw]">
-        <BlurFade>
-          <h1 className="text-[clamp(1.5rem,8.2vw,4.5rem)] font-bold leading-tight">
-            {" "}
-            Hello, I&apos;m
-          </h1>
-          <h1 className="text-[clamp(1.5rem,8.2vw,4.5rem)] font-bold leading-tight text-[#7374be] dark:text-[#9394f1]">
-            Shaswat Kumar.
-          </h1>
-          <div className="flex flex-wrap items-baseline gap-x-4">
+        <ScrollAway>
+          <BlurFade>
             <h1 className="text-[clamp(1.5rem,8.2vw,4.5rem)] font-bold leading-tight">
-              I&apos;m a
+              {" "}
+              Hello, I&apos;m
             </h1>
-            {/* invisible copy of the longest word reserves the space the
+            <h1 className="text-[clamp(1.5rem,8.2vw,4.5rem)] font-bold leading-tight text-[#7374be] dark:text-[#9394f1]">
+              Shaswat Kumar.
+            </h1>
+            <div className="flex flex-wrap items-baseline gap-x-4">
+              <h1 className="text-[clamp(1.5rem,8.2vw,4.5rem)] font-bold leading-tight">
+                I&apos;m a
+              </h1>
+              {/* invisible copy of the longest word reserves the space the
                 absolutely positioned flip text needs, so it can't overlap the
                 heading next to it */}
-            <div className="relative">
-              <span
-                aria-hidden
-                className="invisible block whitespace-nowrap text-[clamp(1.5rem,8.2vw,4.5rem)] font-bold leading-tight"
-              >
-                Front-End Developer.
-              </span>
-              <FlipWords
-                className="absolute left-0 top-0 whitespace-nowrap px-0 text-[clamp(1.5rem,8.2vw,4.5rem)] font-bold leading-tight text-[#0a0a0a] dark:text-[#f8fafc]"
-                words={[
-                  "AI Engineer.",
-                  "ML Engineer.",
-                  "Software Developer.",
-                  "Front-End Developer.",
-                  "Web Developer.",
-                  "CS Graduate Student.",
-                  "UX Designer.",
-                  "Hackathon Winner.",
-                  "Problem Solver.",
-                  "Tech Enthusiast.",
-                  "Team Leader.",
-                  "Contributor.",
-                  "Creative Coder.",
-                  "Learner.",
-                  "Mentor.",
-                ]}
-              />
+              <div className="relative">
+                <span
+                  aria-hidden
+                  className="invisible block whitespace-nowrap text-[clamp(1.5rem,8.2vw,4.5rem)] font-bold leading-tight"
+                >
+                  Front-End Developer.
+                </span>
+                <FlipWords
+                  className="absolute left-0 top-0 whitespace-nowrap px-0 text-[clamp(1.5rem,8.2vw,4.5rem)] font-bold leading-tight text-[#0a0a0a] dark:text-[#f8fafc]"
+                  words={[
+                    "AI Engineer.",
+                    "ML Engineer.",
+                    "Software Developer.",
+                    "Front-End Developer.",
+                    "Web Developer.",
+                    "CS Graduate Student.",
+                    "UX Designer.",
+                    "Hackathon Winner.",
+                    "Problem Solver.",
+                    "Tech Enthusiast.",
+                    "Team Leader.",
+                    "Contributor.",
+                    "Creative Coder.",
+                    "Learner.",
+                    "Mentor.",
+                  ]}
+                />
+              </div>
             </div>
-          </div>
-        </BlurFade>
+          </BlurFade>
+        </ScrollAway>
       </section>
       <section id="projects">
         <div className="space-y-12 w-full py-12">

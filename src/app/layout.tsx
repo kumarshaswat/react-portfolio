@@ -6,6 +6,7 @@ import type { Metadata } from "next";
 import { Inter as FontSans } from "next/font/google";
 import "./globals.css";
 import DotPattern from "@/components/magicui/dot-pattern";
+import SmoothScroll from "@/components/smooth-scroll";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -30,6 +31,7 @@ export default function RootLayout({
           fontSans.variable
         )}
       >
+        <SmoothScroll />
         <div className="fixed inset-0 z-[-10] dark:opacity-30">
           <DotPattern
             className={cn(

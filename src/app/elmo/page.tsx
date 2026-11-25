@@ -243,7 +243,7 @@ const ChallengeCard = ({
           {title}
         </span>
         <motion.span
-          animate={{ rotate: open ? 90 : 0, color: open ? ACCENT : MUTED }}
+          animate={{ rotate: open ? 45 : 0, color: open ? ACCENT : MUTED }}
           transition={{ duration: 0.25 }}
           style={{ display: "flex" }}
         >
@@ -312,7 +312,7 @@ const PIPELINE = [
   {
     step: "01",
     label: "Content Retrieval",
-    desc: "NewsAPI fetches up to 200 articles daily across user-selected categories. Google Search API fills gaps and surfaces breaking stories that NewsAPI's 24-hour delay misses.",
+    desc: "A daily NewsAPI Lambda, triggered by EventBridge, adds about 90 articles per run across user-selected categories, and the home feed shows about 200. For user queries, the Article Search Lambda behind API Gateway classifies the query and searches the Google Search API, which surfaces breaking stories that NewsAPI's 24-hour delay misses.",
   },
   {
     step: "02",
@@ -321,18 +321,18 @@ const PIPELINE = [
   },
   {
     step: "03",
-    label: "Vector Embedding",
-    desc: "Article content is embedded into Pinecone's vector database, enabling semantic search — so when a user asks a question or expands an article, the system retrieves contextually relevant material rather than keyword matches.",
+    label: "Similarity Ranking",
+    desc: "The Article Search Lambda ranks the search results by similarity to the user's query and returns the top 5 full-text articles, so the model works from the most relevant sources instead of raw keyword matches.",
   },
   {
     step: "04",
     label: "AI Generation",
-    desc: "DeepSeek R1:14b, hosted locally via Ollama and shared across the team through Ngrok tunneling, synthesizes retrieved content into summaries, full articles, or query-driven deep dives. Prompt engineering enforces accuracy and English-only output.",
+    desc: "The Next.js /api/generate route puts those 5 articles into a prompt with strict rules: use only the reference content, make nothing up, answer in English only, and follow a fixed Markdown structure. It calls DeepSeek R1 14B (deepseek-r1:14b) in Ollama, served from my laptop through an ngrok tunnel, and streams the answer token by token with the model's <think> reasoning filtered out.",
   },
   {
     step: "05",
     label: "Personalized Delivery",
-    desc: "The frontend, built in Next.js + TypeScript, presents the output at whatever detail level the user has configured — from a quick summary to an expanded multi-source analysis. Everything is tied to a user account managed via AWS Cognito.",
+    desc: "The frontend, built in Next.js + TypeScript, gives every article view two detail options, Simplify and Expand. Each sends the article text straight to the model and comes back in about 3 to 4 seconds. Everything is tied to a user account managed via AWS Cognito.",
   },
 ];
 
@@ -340,56 +340,53 @@ const PipelineSteps = () => {
   const [active, setActive] = useState(0);
 
   return (
-    <div
-      style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fit, minmax(210px, 1fr))",
-        gap: 14,
-      }}
-    >
+    // one full-width row per step: number + label on the left, description
+    // on the right, so long and short descriptions wrap to similar heights
+    <div style={{ display: "grid", gap: 10 }}>
       {PIPELINE.map((item, i) => {
         const on = active === i;
         return (
           <div
             key={item.step}
             onMouseEnter={() => setActive(i)}
+            className="grid gap-2 md:grid-cols-[260px_1fr] md:items-center md:gap-10"
             style={{
-              padding: "26px 22px",
+              padding: "22px 26px",
               background: on ? PANEL : PANEL_ALT,
               border: `1px solid ${on ? ACCENT_DIM : BORDER}`,
               borderRadius: 12,
               transition: "background 0.25s, border-color 0.25s",
             }}
           >
-            <span
-              className={display.className}
-              style={{
-                fontSize: 12,
-                color: ACCENT,
-                opacity: on ? 1 : 0.55,
-                display: "block",
-                marginBottom: 12,
-                transition: "opacity 0.25s",
-              }}
-            >
-              {item.step}
-            </span>
-            <h3
-              className={display.className}
-              style={{
-                color: on ? TEXT : MUTED,
-                fontSize: 17,
-                fontWeight: 400,
-                margin: "0 0 10px",
-                transition: "color 0.25s",
-              }}
-            >
-              {item.label}
-            </h3>
+            <div style={{ display: "flex", alignItems: "baseline", gap: 14 }}>
+              <span
+                className={display.className}
+                style={{
+                  fontSize: 13,
+                  color: ACCENT,
+                  opacity: on ? 1 : 0.55,
+                  transition: "opacity 0.25s",
+                }}
+              >
+                {item.step}
+              </span>
+              <h3
+                className={display.className}
+                style={{
+                  color: on ? TEXT : MUTED,
+                  fontSize: 19,
+                  fontWeight: 400,
+                  margin: 0,
+                  transition: "color 0.25s",
+                }}
+              >
+                {item.label}
+              </h3>
+            </div>
             <p
               style={{
                 color: MUTED,
-                fontSize: 13.5,
+                fontSize: 14.5,
                 lineHeight: 1.7,
                 margin: 0,
               }}
@@ -405,10 +402,11 @@ const PipelineSteps = () => {
 
 const METRICS = [
   { value: "3–4 s", label: "Article summarization and expansion" },
-  { value: "~200 ms", label: "Home page load, 200 articles" },
+  { value: "~14 s", label: "Article Search Lambda: query search and similarity ranking" },
+  { value: "~200 ms", label: "Home page load, about 200 articles" },
   { value: "~60 ms", label: "Article view load" },
   { value: "~200 ms", label: "Auth page load" },
-  { value: "~5.6 min", label: "Daily bulk article Lambda, in the background" },
+  { value: "~5.6 min", label: "Daily population Lambda, about 90 articles per run, in the background" },
 ];
 
 // ── page ─────────────────────────────────────────────────────────────────
@@ -417,7 +415,7 @@ export default function ELMOCaseStudy() {
     {
       title: "DeepSeek Hallucinations & Language Drift",
       problem:
-        "Despite explicit instructions, DeepSeek R1:14b would occasionally fabricate facts or — more disruptively — respond entirely in Chinese instead of English. This was particularly problematic for a platform users are meant to trust for news accuracy.",
+        "Despite explicit instructions, DeepSeek R1:14b would occasionally fabricate facts or, more disruptively, respond entirely in Chinese instead of English. This was particularly problematic for a platform users are meant to trust for news accuracy.",
       solution:
         "We spent significant time dissecting our prompt structure, testing dozens of phrasings, and adding explicit language constraints. We also cross-referenced AI output against the source articles retrieved via Google Search API, which gave the model grounded context to anchor its responses. This process fundamentally changed how we thought about prompt design: structure and specificity matter far more than length or politeness.",
     },
@@ -431,23 +429,23 @@ export default function ELMOCaseStudy() {
     {
       title: "Running a 14B Model on Consumer Hardware",
       problem:
-        "DeepSeek R1:14b is a demanding model. Not every team member had the hardware to run it locally at a usable speed — which created unequal access during development and made collaborative testing difficult.",
+        "DeepSeek R1:14b is a demanding model. Not every team member had the hardware to run it locally at a usable speed, which created unequal access during development and made collaborative testing difficult.",
       solution:
-        "One team member with a higher-spec machine hosted the model locally and exposed it to the rest of the team via Ngrok tunneling. This created a shared development endpoint the entire team could hit. It was a pragmatic workaround, though it also made us think carefully about what a production AI deployment needs to look like — which informed our future work recommendations around containerization with AWS Fargate.",
+        "I set up an Ollama server on my laptop to run deepseek-r1:14b and exposed it through an ngrok tunnel, so the whole team and the app itself could reach the same model endpoint. It was a pragmatic workaround, and it made us think carefully about what a production AI deployment needs, which informed our future work recommendation to containerize with AWS Fargate.",
     },
     {
       title: "NewsAPI's Limitations: Freshness & Category Depth",
       problem:
-        "NewsAPI doesn't deliver real-time content — most articles were at least 24 hours old by the time they reached us. Additionally, the API's usable topic categories were more limited than anticipated, which threatened to shrink the range of user preferences we could offer.",
+        "NewsAPI doesn't deliver real-time content: most articles were at least 24 hours old by the time they reached us. Additionally, the API's usable topic categories were more limited than anticipated, which threatened to shrink the range of user preferences we could offer.",
       solution:
         "We blended recent articles with slightly older content to maintain coverage continuity, and supplemented NewsAPI with the Google Search API to fill gaps. For categories, we pulled back to only the most reliably populated ones rather than offering empty or sparse topics. We also used open-source web scraping (JSDOM + Readability) to extract full article text from source URLs, since NewsAPI often returned only a title and description.",
     },
     {
       title: "Balancing Generation Speed vs. Content Depth",
       problem:
-        "Our AI article generation Lambda averaged around 14 seconds per call when using Deepseek with the Google Search API. For a news platform, that's a long time to wait. But cutting the depth of retrieval hurt content quality.",
+        "Our Article Search Lambda, which searches the Google Search API and ranks the results by similarity, averaged around 14 seconds per query. For a news platform, that's a long time to wait. But cutting the depth of retrieval hurt content quality.",
       solution:
-        "We implemented separate processing paths based on content type and user preference. Feature summarization and expansion operations — the user-facing AI calls — were tuned to run in 3–4 seconds by scoping the retrieval window and adjusting model parameters. The heavier bulk article population job (which inserts ~90 articles daily) was allowed to run longer as a background Lambda, invisible to users.",
+        "We split the work into separate paths. Simplify and Expand, the AI calls users hit most often, skip retrieval entirely and send the article text straight to the model, so they return in about 3 to 4 seconds. Query answers stream token by token, so users see output as soon as generation starts instead of waiting for the full response. The daily population Lambda, which adds about 90 articles per run, takes about 5.6 minutes in the background, invisible to users.",
     },
   ];
 
@@ -457,26 +455,27 @@ export default function ELMOCaseStudy() {
       role: "AI Engineer",
       highlight: true,
       contributions: [
-        "Integrated DeepSeek R1:14b via a fine-tuned pipeline optimized for news generation",
-        "Deployed the model locally using Ollama and exposed it via Ngrok for team-wide access during development",
-        "Designed and built the custom RAG framework combining NewsAPI retrieval, Google Search context injection, and Pinecone vector embeddings",
-        "Led prompt engineering work to reduce hallucinations and enforce English-only responses",
+        "Ran the fine-tuning experiments: LoRA fine-tuned a distilled DeepSeek R1 14B with Unsloth for structured Markdown output, using Hugging Face datasets and a 90/10 train/validation split",
+        "Set up the Ollama server and the ngrok tunnel that gave the team and the app access to the model",
+        "Built the RAG pipeline: designed the flow, built the generation layer, and worked with Abel on the retrieval Lambda",
+        "Led prompt engineering for accuracy, English-only output, and a consistent Markdown format",
+        "Built token-by-token streaming with the model's reasoning filtered out, plus the Simplify and Expand features",
       ],
     },
     {
       name: "Isaac Hasan",
       role: "Backend Developer",
       contributions: [
-        "Created and managed AWS Lambda functions powering API integrations across the platform",
-        "Led the onboarding of the AI model and coordinated its connection to frontend and backend services",
+        "Built the image search Lambdas and the Lambda that combines article and image search behind API Gateway",
+        "Helped connect the AI model to the app",
       ],
     },
     {
       name: "Abel Thomas",
       role: "Backend Developer",
       contributions: [
-        "Architected core backend operations within AWS: authentication, user data storage, and API routing",
-        "Integrated backend services with frontend components through AWS Amplify",
+        "Built the Article Search and NewsAPI Lambdas",
+        "Set up authentication and user data storage in AWS",
       ],
     },
     {
@@ -503,7 +502,7 @@ export default function ELMOCaseStudy() {
       style={{ background: BG, color: TEXT, minHeight: "100vh" }}
     >
       <ScrollProgress className="bg-[#FF7E77]" />
-      <style>{`
+      <style dangerouslySetInnerHTML={{ __html: `
         /* back links: muted until hover, when the text lifts to white and the
            accent underline wipes in from the left */
         .elmo-back {
@@ -532,7 +531,7 @@ export default function ELMOCaseStudy() {
         @media (prefers-reduced-motion: reduce) {
           .elmo-back::after { transition: none; }
         }
-      `}</style>
+      ` }} />
       {/* ── Hero ── */}
       <section
         style={{
@@ -606,7 +605,7 @@ export default function ELMOCaseStudy() {
               >
                 An AI-powered news platform that aggregates content from across
                 the web, eliminates redundancy, and delivers personalized
-                summaries — built in one semester by five students at the
+                summaries, built in one semester by five students at the
                 University of Texas at Dallas.
               </p>
 
@@ -704,7 +703,7 @@ export default function ELMOCaseStudy() {
           <Meta label="Timeline" value="January 2025 – May 2025" />
           <Meta
             label="Stack"
-            value="Next.js · AWS · DeepSeek R1:14b · Pinecone"
+            value="Next.js · AWS · DeepSeek R1:14b · Ollama"
           />
           <Meta
             label="Team"
@@ -763,7 +762,7 @@ export default function ELMOCaseStudy() {
               {[
                 [
                   "Core goal",
-                  "Aggregate news without repeating it — comprehensive coverage, zero redundancy",
+                  "Aggregate news without repeating it: comprehensive coverage, zero redundancy",
                 ],
                 [
                   "User control",
@@ -851,7 +850,9 @@ export default function ELMOCaseStudy() {
               Measured in production
             </p>
 
-            <style>{`
+            <style
+              dangerouslySetInnerHTML={{
+                __html: `
               @keyframes elmo-marquee {
                 0%   { transform: translateX(0); }
                 100% { transform: translateX(-50%); }
@@ -865,7 +866,9 @@ export default function ELMOCaseStudy() {
               @media (prefers-reduced-motion: reduce) {
                 .elmo-metrics-track { animation: none; }
               }
-            `}</style>
+            `,
+              }}
+            />
             <div
               style={{
                 overflow: "hidden",
@@ -876,10 +879,12 @@ export default function ELMOCaseStudy() {
               }}
             >
               <div className="elmo-metrics-track">
-                {/* the list is rendered twice so the loop never shows a seam */}
+                {/* the list is rendered twice so the loop never shows a seam;
+                    the second copy is hidden from screen readers */}
                 {[0, 1].map((copy) => (
                   <div
                     key={copy}
+                    aria-hidden={copy === 1}
                     style={{ display: "flex", gap: 12, paddingRight: 12 }}
                   >
                     {METRICS.map((m) => (
@@ -894,8 +899,9 @@ export default function ELMOCaseStudy() {
               </div>
             </div>
             <p style={{ color: MUTED, fontSize: 13.5, marginTop: 14 }}>
-              The 14-second AI generation Lambda runs in the background, so
-              users only experience the 3–4s summarization endpoints.
+              The ~14s figure is retrieval (Google search plus similarity
+              ranking), not the model. Simplify and Expand skip retrieval and
+              send the article text straight to the model.
             </p>
           </div>
         </div>
@@ -906,7 +912,7 @@ export default function ELMOCaseStudy() {
         <div style={{ maxWidth: 1200, margin: "0 auto" }}>
           <SectionHeading
             kicker="03 — Infrastructure"
-            title="Built exclusively on AWS"
+            title="A backend built on AWS"
           />
           <p
             style={{
@@ -917,10 +923,11 @@ export default function ELMOCaseStudy() {
               marginBottom: 36,
             }}
           >
-            Rather than mixing cloud providers, we committed entirely to the AWS
-            ecosystem, both to keep our architecture coherent and because the
-            capstone gave us a chance to understand how these services actually
-            fit together in a real application.
+            The backend runs on AWS, which kept our architecture coherent and
+            gave us a chance to understand how these services actually fit
+            together in a real application. The model is the exception:
+            DeepSeek R1 14B runs in Ollama on my laptop, reachable by the team
+            and the app through an ngrok tunnel.
           </p>
           <div
             style={{
@@ -938,12 +945,12 @@ export default function ELMOCaseStudy() {
               {
                 service: "Lambda",
                 purpose:
-                  "Serverless execution for AI article generation, daily bulk article population, API routing, and database operations. No always-on servers.",
+                  "Serverless execution for article search and similarity ranking, image search, daily article population, API routing, and database operations. No always-on servers.",
               },
               {
                 service: "Cognito",
                 purpose:
-                  "User authentication, account creation, and session management. Proved to be our steepest early learning curve — see the Challenges section.",
+                  "User authentication, account creation, and session management. Proved to be our steepest early learning curve. See the Challenges section.",
               },
               {
                 service: "DynamoDB",
@@ -958,7 +965,7 @@ export default function ELMOCaseStudy() {
               {
                 service: "EventBridge",
                 purpose:
-                  "Scheduled triggers for background tasks like the daily article curation Lambda — so 200 fresh articles are ready before users open the app each morning.",
+                  "Scheduled triggers for background tasks like the daily population Lambda, which adds about 90 fresh articles to the feed on each run.",
               },
             ].map((s) => (
               <FeatureCard
@@ -1007,20 +1014,20 @@ export default function ELMOCaseStudy() {
           <div className="grid gap-3.5 md:grid-cols-2">
             {[
               {
-                title: "Why RAG over fine-tuning?",
-                body: "We experimented with the idea of fine-tuning DeepSeek on news data, but the effort-to-gain ratio didn't make sense for a semester-long project. RAG gave us something more practically valuable: the ability to inject yesterday's news into every generation call, making the model's output genuinely current rather than frozen at a training cutoff.",
+                title: "Where did RAG and fine-tuning fit?",
+                body: "We experimented with fine-tuning. I LoRA fine-tuned a distilled DeepSeek R1 14B model with Unsloth to output structured Markdown, using Hugging Face datasets with a 90/10 train/validation split, and tested several Unsloth model versions. It was still being tuned at the end of the semester and its output wasn't reliable enough yet, so the live app ran the base deepseek-r1:14b model with the Markdown structure enforced by the prompt. RAG did a separate job: it brought current news into every response, so the output reflected recent articles rather than a training cutoff.",
               },
               {
-                title: "Why Pinecone for vector search?",
-                body: "We needed semantic search — the ability to find articles that are conceptually related to a user's query, not just keyword-matched. Pinecone's managed vector database let us skip the infrastructure complexity and focus on the embedding pipeline. It also made the article expansion feature possible: when a user expands an article, we retrieve semantically similar content from other sources and weave it in.",
+                title: "Why rank search results by similarity?",
+                body: "Google Search returns plenty of loosely related pages. The Article Search Lambda ranks results by similarity to the user's query and passes only the top 5 full-text articles to the model, which keeps the prompt focused and gives the model concrete sources to work from.",
               },
               {
                 title: "Why Ollama for local model serving?",
-                body: "Running DeepSeek locally via Ollama meant we had full control over the model and zero per-token API costs during development. The tradeoff was hardware dependency — not everyone on the team had a machine that could run a 14B parameter model. Ngrok tunneling solved the access problem for development, and informed our future recommendation to containerize with AWS Fargate for production.",
+                body: "Running DeepSeek locally via Ollama meant we had full control over the model and zero per-token API costs during development. The tradeoff was hardware dependency: not everyone on the team had a machine that could run a 14B parameter model. I hosted the model on my laptop and set up an ngrok tunnel so the team and the app could reach it. That worked for a semester, and it informed our recommendation to containerize with AWS Fargate for production.",
               },
               {
-                title: "Why three separate article detail levels?",
-                body: "User research in the news space consistently shows that different contexts call for different depths: a commuter wants a headline and three sentences, a researcher wants the full story with sources. We built two one-tap AI calls — 'Simplify' and 'Expand' — on every article view, so users can go deeper or shallower without changing screens. The design philosophy was to anticipate user needs rather than require users to navigate to a settings page.",
+                title: "Why two article detail levels?",
+                body: "User research in the news space consistently shows that different contexts call for different depths: a commuter wants a headline and three sentences, a researcher wants the full story with sources. We built two one-tap AI calls, Simplify and Expand, on every article view. Each sends the article text straight to the model and returns in about 3 to 4 seconds, so users can go deeper or shallower without changing screens. The design philosophy was to anticipate user needs rather than require users to navigate to a settings page.",
               },
             ].map((d) => (
               <FeatureCard key={d.title} title={d.title} body={d.body} />
@@ -1050,15 +1057,13 @@ export default function ELMOCaseStudy() {
             the system, with collaboration happening through weekly sprints,
             GitHub Projects, and daily Discord syncs.
           </p>
-          {/* six columns, each card spanning two: three on the first row, and
-              the last two centred by starting the fourth at column two */}
-          <div className="grid auto-rows-fr gap-3.5 sm:grid-cols-2 lg:grid-cols-6">
+          {/* three columns: the first card (Shaz) spans both rows on the left,
+              the other four fill a 2x2 block on the right */}
+          <div className="grid auto-rows-fr gap-3.5 sm:grid-cols-2 lg:grid-cols-3">
             {team.map((t, i) => (
               <div
                 key={t.name}
-                className={
-                  i === 3 ? "lg:col-span-2 lg:col-start-2" : "lg:col-span-2"
-                }
+                className={i === 0 ? "lg:row-span-2" : undefined}
                 style={{
                   padding: "24px 22px",
                   border: `1px solid ${t.highlight ? ACCENT_DIM : BORDER}`,
@@ -1147,7 +1152,7 @@ export default function ELMOCaseStudy() {
             {[
               {
                 heading: "Context is everything in LLM prompting",
-                body: "The single biggest improvement to our AI output came not from changing models, but from changing what we fed the model. When we started injecting real, recent articles from Google Search API into each generation call, the quality of output jumped noticeably. Relevance, accuracy, and coherence all improved — because the model had something concrete to synthesize rather than drawing purely from weights trained months ago.",
+                body: "The single biggest improvement to our AI output came not from changing models, but from changing what we fed the model. When we started injecting real, recent articles from Google Search API into each generation call, the quality of output jumped noticeably. Relevance, accuracy, and coherence all improved, because the model had something concrete to synthesize rather than drawing purely from weights trained months ago.",
               },
               {
                 heading:
@@ -1156,11 +1161,11 @@ export default function ELMOCaseStudy() {
               },
               {
                 heading: "Agile sprints are a forcing function for honesty",
-                body: "Weekly sprint reviews made it hard to hide stalled work or ambiguous progress. Having to articulate what was done — and what wasn't — every seven days created a useful discipline. Tasks that seemed vague got scoped down. Features that seemed essential got deprioritized when the sprint showed we'd overcommitted.",
+                body: "Weekly sprint reviews made it hard to hide stalled work or ambiguous progress. Having to articulate what was done, and what wasn't, every seven days created a useful discipline. Tasks that seemed vague got scoped down. Features that seemed essential got deprioritized when the sprint showed we'd overcommitted.",
               },
               {
                 heading: "Good UX decisions are often subtractive",
-                body: "We didn't conduct formal user studies, but we did constantly ask ourselves how we'd want to use the app. That question led us to cut several features we'd initially planned — category filters that were too granular, a recommendation engine we didn't have time to tune well — in favor of making the core reading experience fast and clean. The two-state article view (Simplify / Expand) came from this mindset.",
+                body: "We didn't conduct formal user studies, but we did constantly ask ourselves how we'd want to use the app. That question led us to cut several features we'd initially planned (category filters that were too granular, a recommendation engine we didn't have time to tune well) in favor of making the core reading experience fast and clean. The two-state article view (Simplify / Expand) came from this mindset.",
               },
             ].map((t) => (
               <InsightRow key={t.heading} title={t.heading} text={t.body} />

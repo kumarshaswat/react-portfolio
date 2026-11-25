@@ -234,7 +234,7 @@ export default function EarnifyCaseStudy() {
       style={{ background: BG, color: TEXT, minHeight: "100vh" }}
     >
       <ScrollProgress className="bg-[#FFB238]" />
-      <style>{`
+      <style dangerouslySetInnerHTML={{ __html: `
         /* both back links share one wiping underline: the top one wipes in on
            hover, the closing one wipes out */
         .earnify-back {
@@ -267,7 +267,7 @@ export default function EarnifyCaseStudy() {
         @media (prefers-reduced-motion: reduce) {
           .earnify-back::after { transition: none; }
         }
-      `}</style>
+      ` }} />
       {/* ── Hero ── */}
       <section
         style={{

@@ -20,7 +20,7 @@ interface BlurFadeProps {
   delay?: number;
   yOffset?: number;
   inView?: boolean;
-  inViewMargin?: string;
+  inViewMargin?: NonNullable<Parameters<typeof useInView>[1]>["margin"];
   blur?: string;
 }
 
