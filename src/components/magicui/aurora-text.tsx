@@ -22,14 +22,15 @@ export const AuroraText = memo(
       })`,
       WebkitBackgroundClip: "text",
       WebkitTextFillColor: "transparent",
-      animationDuration: `${10 / speed}s`,
+      backgroundSize: "200% auto",
+      animation: `aurora ${6 / speed}s ease-in-out infinite alternate`,
     }
 
     return (
       <span className={`relative inline-block ${className}`}>
         <span className="sr-only">{children}</span>
         <span
-          className="animate-aurora relative bg-size-[200%_auto] bg-clip-text text-transparent"
+          className="aurora-text relative bg-clip-text text-transparent"
           style={gradientStyle}
           aria-hidden="true"
         >

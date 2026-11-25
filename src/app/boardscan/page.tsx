@@ -1,11 +1,90 @@
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ArrowUpRight, Construction } from "lucide-react";
 import { GlyphMatrix } from "@/components/magicui/glyph-matrix";
 import { AuroraText } from "@/components/magicui/aurora-text";
 
+const REPO = "https://github.com/kumarshaswat/BoardScan";
+
+const STACK = [
+  "React Native · Expo",
+  "Flask",
+  "YOLO",
+  "OpenCV",
+  "VTracer",
+  "Excalidraw",
+];
+
+// one strip of caution tape. The text is repeated twice so the scroll loops,
+// and the yellow fill and edge stripes live on the moving track so they move
+// with the text. Each label is a fixed 300px wide, a multiple of the 20px
+// stripe period, so the stripes line up at the loop point too.
+const Tape = ({
+  className,
+  reverse,
+}: {
+  className: string;
+  reverse?: boolean;
+}) => (
+  <div
+    aria-hidden
+    className={`pointer-events-none absolute left-[-10%] z-20 w-[120%] overflow-hidden shadow-[0_10px_30px_-10px_rgba(0,0,0,0.8)] ${className}`}
+  >
+    <div className={`bs-tape-track ${reverse ? "bs-tape-reverse" : ""}`}>
+      {[0, 1].map((copy) => (
+        <span key={copy} className="flex shrink-0">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <span
+              key={i}
+              className="flex w-[300px] shrink-0 items-center justify-center gap-4 text-sm font-black uppercase tracking-[0.25em] text-black"
+            >
+              Under construction
+              <span className="inline-block h-2 w-2 rotate-45 bg-black" />
+            </span>
+          ))}
+        </span>
+      ))}
+    </div>
+  </div>
+);
+
 export default function BoardScanCaseStudy() {
   return (
-    <div className="relative min-h-screen w-full overflow-hidden bg-black text-white">
+    <div className="relative min-h-dvh w-full overflow-hidden bg-black text-white md:h-dvh md:min-h-[640px]">
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `
+        /* caution tape: yellow band with black hazard stripes along both edges */
+        /* stripe width 7.071px at 45deg = a 20px horizontal period */
+        .bs-tape-track {
+          display: flex;
+          width: max-content;
+          padding: 8px 0;
+          background:
+            repeating-linear-gradient(-45deg, #0a0a0a 0 7.071px, #facc15 7.071px 14.142px) top / 100% 6px no-repeat,
+            repeating-linear-gradient(-45deg, #0a0a0a 0 7.071px, #facc15 7.071px 14.142px) bottom / 100% 6px no-repeat,
+            #facc15;
+          animation: bs-tape 40s linear infinite;
+        }
+        .bs-tape-reverse { animation-direction: reverse; }
+        @keyframes bs-tape {
+          to { transform: translateX(-50%); }
+        }
+        /* the sign hangs from its top corner and sways gently */
+        .bs-sign {
+          transform-origin: 50% -20px;
+          animation: bs-sway 4s ease-in-out infinite alternate;
+        }
+        @keyframes bs-sway {
+          from { transform: rotate(-4deg); }
+          to { transform: rotate(4deg); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .bs-tape-track, .bs-sign { animation: none; }
+        }
+      `,
+        }}
+      />
+
       {/* Background glyph matrix */}
       <div className="pointer-events-none absolute inset-0">
         <GlyphMatrix
@@ -14,53 +93,87 @@ export default function BoardScanCaseStudy() {
           mutationRate={0.04}
           interval={90}
           fadeBottom={0.75}
-          color="#52525b"
+          color="#334155"
         />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_45%_at_50%_45%,rgba(37,99,235,0.18),transparent_70%)]" />
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/10 to-black" />
       </div>
 
-      {/* Content */}
+      {/* Caution tape across the top and bottom corners */}
+      <Tape className="top-[4%] rotate-[3deg]" />
+      <Tape className="bottom-[3%] -rotate-[2deg]" reverse />
+
       <Link
         href="/#projects"
-        className="absolute left-6 top-20 z-40 inline-flex items-center gap-2 text-sm text-white/60 transition hover:text-white sm:top-24"
+        className="absolute left-6 top-20 z-[25] inline-flex items-center gap-2 text-sm text-white/60 transition hover:text-white sm:top-24"
       >
         <ArrowLeft size={15} /> Back to projects
       </Link>
 
-      <div className="relative z-10 mx-auto flex min-h-screen max-w-4xl flex-col items-center justify-center px-6 text-center">
-        <span className="mb-6 rounded-full border border-white/15 bg-white/5 px-4 py-1 text-xs font-medium uppercase tracking-widest text-white/60">
-          Case Study
-        </span>
+      <div className="relative z-10 mx-auto flex min-h-dvh max-w-3xl md:h-full md:min-h-0 flex-col items-center justify-center px-6 pb-20 pt-28 text-center [@media(max-height:800px)]:pb-16 [@media(max-height:800px)]:pt-24">
+        {/* Construction sign: a yellow diamond hung on a short post */}
+        <div className="bs-sign mb-6 flex flex-col items-center [@media(max-height:800px)]:mb-4">
+          <div className="h-4 w-px bg-white/30 [@media(max-height:800px)]:h-2" />
+          <div className="flex h-16 w-16 [@media(max-height:800px)]:h-12 [@media(max-height:800px)]:w-12 rotate-45 items-center justify-center rounded-xl border-4 border-black bg-yellow-400 shadow-[0_0_0_3px_#facc15,0_20px_50px_-10px_rgba(250,204,21,0.45)]">
+            <Construction
+              className="-rotate-45 text-black"
+              size={26}
+              strokeWidth={2.2}
+            />
+          </div>
+        </div>
 
-        <h1 className="text-5xl font-bold tracking-tight sm:text-6xl lg:text-7xl">
+        <h1 className="text-5xl font-bold tracking-tight sm:text-6xl [@media(max-height:800px)]:sm:text-5xl">
           <span className="text-white">Board</span>
-          <AuroraText colors={["#FF0080", "#7928CA", "#0070F3", "#38bdf8"]}>
+          <AuroraText colors={["#1D5FE9", "#2AAAF6", "#2384EF", "#2AAAF6"]}>
             Scan
           </AuroraText>
         </h1>
 
-        {/* Work in progress notice */}
-        <div className="mt-6 flex w-full max-w-md flex-col items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-6 py-8 backdrop-blur-sm">
-          <p className="text-sm text-white/70">
-            This case study is under construction. In the meantime, please refer
-            to the GitHub repository for more information.
+        <p className="mt-3 text-sm text-white/50">
+          This case study is still being built. Here&apos;s the short version.
+        </p>
+
+        {/* Summary card */}
+        <div className="mt-6 w-full rounded-2xl border border-white/10 bg-white/[0.04] p-6 text-left backdrop-blur-md [@media(max-height:800px)]:mt-4 [@media(max-height:800px)]:p-5">
+          <p className="text-sm leading-relaxed text-white/75">
+            Ideas get left behind on whiteboards every day, and a phone photo is
+            usually blurry, full of glare, and impossible to edit. BoardScan
+            turns that photo into a fully editable digital board where every
+            stroke can be moved, scaled, and rewritten.
           </p>
-          <a
-            href="https://github.com/kumarshaswat/BoardScan"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-2 inline-flex items-center gap-2 rounded-full bg-white px-5 py-2 text-sm font-medium text-black transition hover:bg-white/85"
-          >
-            View on GitHub
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              className="h-4 w-4"
+          <p className="mt-3 text-sm leading-relaxed text-white/75">
+            The phone app sends the photo through an ngrok tunnel to a Flask
+            server. A YOLO model trained on a custom whiteboard dataset finds
+            the handwriting and shapes, OpenCV separates the ink from the glare,
+            and VTracer turns each stroke into smooth vector paths that come
+            back to the phone as an Excalidraw canvas.
+          </p>
+
+          <div className="mt-5 flex flex-wrap gap-2">
+            {STACK.map((s) => (
+              <span
+                key={s}
+                className="rounded-full border border-sky-400/20 bg-sky-400/[0.07] px-3 py-1 text-xs text-sky-200/80"
+              >
+                {s}
+              </span>
+            ))}
+          </div>
+
+          <div className="mt-5 flex flex-col items-start justify-between gap-4 border-t border-white/10 pt-5 sm:flex-row sm:items-center">
+            <p className="text-sm font-medium text-white/80">
+              Want to learn more? The full write-up and demo are on GitHub.
+            </p>
+            <a
+              href={REPO}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex shrink-0 items-center gap-2 rounded-full bg-white px-5 py-2 text-sm font-medium text-black transition hover:bg-sky-100"
             >
-              <path d="M12 .5C5.73.5.98 5.24.98 11.52c0 4.86 3.15 8.98 7.52 10.44.55.1.75-.24.75-.53 0-.26-.01-1.12-.02-2.03-3.06.67-3.71-1.3-3.71-1.3-.5-1.28-1.22-1.62-1.22-1.62-1-.68.08-.67.08-.67 1.1.08 1.68 1.13 1.68 1.13.98 1.68 2.58 1.2 3.2.92.1-.71.38-1.2.7-1.48-2.44-.28-5.01-1.22-5.01-5.42 0-1.2.43-2.18 1.13-2.94-.11-.28-.49-1.4.11-2.93 0 0 .92-.3 3.02 1.12a10.5 10.5 0 0 1 5.5 0c2.1-1.42 3.02-1.12 3.02-1.12.6 1.53.22 2.65.11 2.93.7.76 1.13 1.74 1.13 2.94 0 4.21-2.58 5.14-5.03 5.41.39.34.74 1.01.74 2.04 0 1.47-.01 2.66-.01 3.02 0 .29.2.64.76.53 4.36-1.46 7.51-5.58 7.51-10.44C23.02 5.24 18.27.5 12 .5Z" />
-            </svg>
-          </a>
+              View on GitHub <ArrowUpRight size={15} />
+            </a>
+          </div>
         </div>
       </div>
     </div>
